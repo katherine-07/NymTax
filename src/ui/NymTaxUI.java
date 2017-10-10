@@ -38,7 +38,9 @@ public class NymTaxUI {
 	private String code;
     private JList consoleList = new JList();
     private DefaultListModel tokenListModel;
-    private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
+	private JTextArea CodeArea;
+	private JComboBox comboBox;
+	private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
 	JScrollPane OutputscrollPane;
 	/**
 	 * Launch the application.
@@ -89,7 +91,7 @@ public class NymTaxUI {
 		CodescrollPane.setBounds(15, 77, 1168, 475);
 		frame.getContentPane().add(CodescrollPane);
 		
-		JTextArea CodeArea = new JTextArea();
+		CodeArea = new JTextArea();
 		CodescrollPane.setViewportView(CodeArea);
 		
 		JLabel lblCode = new JLabel("Code :");
@@ -154,7 +156,7 @@ public class NymTaxUI {
 		RunButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		menuBar.add(RunButton);
 		
-		JComboBox comboBox = new JComboBox();
+		comboBox= new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		frame.getContentPane().add(comboBox);
 		comboBox.setMaximumRowCount(5);
