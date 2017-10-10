@@ -27,14 +27,18 @@ import antlr4.generate.NymtaxLexer;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.apache.log4j.Logger;
 
 public class NymTaxUI {
 
+
+	final static Logger logger = Logger.getLogger(NymTaxUI.class);
+	
 	private JFrame frame;
 	private String code;
     private JList consoleList = new JList();
     private DefaultListModel tokenListModel;
-    private ParseTreeListener walker = new DetectionNymtaxWalker();
+    private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
 	JScrollPane OutputscrollPane;
 	/**
 	 * Launch the application.
@@ -122,8 +126,14 @@ public class NymTaxUI {
                     System.out.println("Token #" + t.getTokenIndex());
                     System.out.println("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
                             + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+                    
                     tokenListModel.addElement("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
                             + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+                    
+                    if(0 == walker.getOutput())
+                    	logger.info("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
+                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+                    
                     System.out.println("----------------");
                 }
 				NymtaxParser parser = new NymtaxParser(tokens);
@@ -155,7 +165,7 @@ public class NymTaxUI {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				int out = comboBox.getSelectedIndex();
+					walker.setOutput(comboBox.getSelectedIndex());
 			}
 		});
 	}

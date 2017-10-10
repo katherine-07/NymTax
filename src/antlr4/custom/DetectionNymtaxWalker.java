@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 
 import antlr4.generate.NymtaxParser.AssignContext;
 import antlr4.generate.NymtaxParser.Base_statementContext;
+import antlr4.generate.NymtaxParser.Bool_termContext;
 import antlr4.generate.NymtaxParser.Boolean_expressionContext;
 import antlr4.generate.NymtaxParser.Boolean_logicContext;
 import antlr4.generate.NymtaxParser.Condition_statementContext;
@@ -22,8 +23,7 @@ import antlr4.generate.NymtaxParser.Func_without_sendContext;
 import antlr4.generate.NymtaxParser.Function_call_statContext;
 import antlr4.generate.NymtaxParser.Input_IDENTIFIERContext;
 import antlr4.generate.NymtaxParser.Input_data_typeContext;
-import antlr4.generate.NymtaxParser.List_IDENTIFIERContext;
-import antlr4.generate.NymtaxParser.List_assignContext;
+import antlr4.generate.NymtaxParser.List_constantsContext;
 import antlr4.generate.NymtaxParser.List_eventContext;
 import antlr4.generate.NymtaxParser.List_func_declarationContext;
 import antlr4.generate.NymtaxParser.List_parameterContext;
@@ -133,21 +133,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 		// TODO Auto-generated method stub
 		if(output == 0)
 			logger.info("[INFO] Exiting list of variables.");
-	}
-
-	@Override
-	public void enterList_IDENTIFIER(List_IDENTIFIERContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Entering list of identifiers..");
-		
-	}
-
-	@Override
-	public void exitList_IDENTIFIER(List_IDENTIFIERContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting list of variables..");
 	}
 
 	@Override
@@ -330,20 +315,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 		// TODO Auto-generated method stub
 		if(output == 0)
 			logger.info("[INFO] Exiting relational operators.");
-	}
-
-	@Override
-	public void enterList_assign(List_assignContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Entering assignment list.");
-	}
-
-	@Override
-	public void exitList_assign(List_assignContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting assignment list.");
 	}
 
 	@Override
@@ -624,6 +595,34 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 		// TODO Auto-generated method stub
 		if(output == 0)
 			logger.info("[INFO] Exiting main function.");
+	}
+
+	@Override
+	public void enterList_constants(List_constantsContext ctx) {
+		// TODO Auto-generated method stub
+		if(output == 0)
+			logger.info("[INFO] Entering constant list.");
+	}
+
+	@Override
+	public void exitList_constants(List_constantsContext ctx) {
+		// TODO Auto-generated method stub
+		if(output == 0)
+			logger.info("[INFO] Exiting constant list.");
+	}
+
+	@Override
+	public void enterBool_term(Bool_termContext ctx) {
+		// TODO Auto-generated method stub
+		if(output == 0)
+			logger.info("[INFO] Entering boolean term.");
+	}
+
+	@Override
+	public void exitBool_term(Bool_termContext ctx) {
+		// TODO Auto-generated method stub
+		if(output == 0)
+			logger.info("[INFO] Exiting boolean term.");
 	}
 
 }
