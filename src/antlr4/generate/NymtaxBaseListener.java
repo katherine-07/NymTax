@@ -52,13 +52,13 @@ public class NymtaxBaseListener implements NymtaxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterList_var_name(NymtaxParser.List_var_nameContext ctx) { }
+	@Override public void enterList_IDENTIFIER(NymtaxParser.List_IDENTIFIERContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitList_var_name(NymtaxParser.List_var_nameContext ctx) { }
+	@Override public void exitList_IDENTIFIER(NymtaxParser.List_IDENTIFIERContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -292,13 +292,13 @@ public class NymtaxBaseListener implements NymtaxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInput_var_name(NymtaxParser.Input_var_nameContext ctx) { }
+	@Override public void enterInput_IDENTIFIER(NymtaxParser.Input_IDENTIFIERContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInput_var_name(NymtaxParser.Input_var_nameContext ctx) { }
+	@Override public void exitInput_IDENTIFIER(NymtaxParser.Input_IDENTIFIERContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

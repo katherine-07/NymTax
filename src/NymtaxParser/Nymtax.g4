@@ -8,26 +8,27 @@ grammar Nymtax;
  * 		}; 
  */
 
-program   		: const_declaration list_func_declaration func_main;
           
           
 	//**** Parser ****//
-	
+
+program   		: const_declaration list_func_declaration func_main;
+
 // VARIABLE DECLARATION //
 
 var_declaration	: list_var; 		
 list_var		: DATA_TYPE '[]' |
 				  DATA_TYPE '*'  |
 				  DATA_TYPE;
-list_var_name 	: VAR_NAME '~' list_var_name |
-				  // ~ as =   	
-				  VAR_NAME;
+list_IDENTIFIER 	: IDENTIFIER '~' list_IDENTIFIER |
+				  // ~ as =
+				  IDENTIFIER;
 
 // CONSTANT DECLARATION //
-const_declaration 	: DATA_TYPE VAR_NAME '=' constant;
+const_declaration 	: DATA_TYPE IDENTIFIER '=' constant;
 constant			: INTEGER | FLOAT | CHAR | STRING;
 
-	
+
 // STATEMENT //
 list_statement	: '{' list_statement '}'|
 				  list_statement list_var list_statement |
@@ -46,7 +47,7 @@ statement		: list_assign |
 				  send_statement |
 				  'STOP' ';' |
 				  'PROCEED' ';' ;
-				  
+
 function_call_stat	: FUNCTION_NAME '(' list_parameter ')' ;
 list_parameter		: PARAMETER;
 
@@ -60,7 +61,7 @@ expression			: string_expression |
 string_expression	: '+' string_expression |
 					  '!' string_expression |
 					  '-' string_expression |
-					  VAR_NAME |
+					  IDENTIFIER |
 					  STRING;
 numerical_expression : '+' numerical_expression |
 					  '-' numerical_expression |
@@ -78,18 +79,18 @@ relation_ops		: '~~' | '!~' | '>~' | '<~' | '>>' | '<<' ;
 
 // ASSIGNMENT STATEMENTS //
 list_assign 	: assign ';' list_assign | assign ';';
-assign			: VAR_NAME '~' VAR_NAME |
-				  VAR_NAME '~' constant;
-			
+assign			: IDENTIFIER '~' IDENTIFIER |
+				  IDENTIFIER '~' constant;
+
 // INPUT OUTPUT //
 write_statement	: 'WRITE' '(' write_list ')' ;
-write_list		: VAR_NAME + write_list |
+write_list		: IDENTIFIER + write_list |
 				  '"' STRING '"' + write_list |
 				  '"' STRING '"' |
-				  VAR_NAME;
-read_statement	: 'READ' '(' input_data_type '~' input_var_name ')';
+				  IDENTIFIER;
+read_statement	: 'READ' '(' input_data_type '~' input_IDENTIFIER ')';
 input_data_type : '%' DATA_TYPE;
-input_var_name	: '@' VAR_NAME;
+input_IDENTIFIER	: '@' IDENTIFIER;
 
 // CONDITIONAL STATEMENTS //
 when_statement	: 'WHEN' '(' boolean_expression ')' '{' statement '}' |
@@ -99,7 +100,7 @@ when_statement	: 'WHEN' '(' boolean_expression ')' '{' statement '}' |
 				  'OTHERWISE' '(' boolean_expression ')' '{' statement '}'
 				  otherwise_when_statement;
 
-otherwise_when_statement:	'OTHERWISE WHEN' '(' boolean_expression ')' '{' statement '}' 
+otherwise_when_statement:	'OTHERWISE WHEN' '(' boolean_expression ')' '{' statement '}'
 							otherwise_when_statement |
 							otherwise_when_statement '{' statement '}' ;
 
@@ -116,55 +117,54 @@ loop_throughout_statement : 'THROUGHOUT' '(' boolean_expression ')' '{' statemen
 loop_do_throughout_statement : 'DO' '{' statement '}' 'THROUGHOUT' '(' boolean_expression ')' ;
 
 // FUNCTIONS //
-list_func_declaration	: func_declaration list_func_declaration | '\n' ;
+list_func_declaration	: func_declaration list_func_declaration ;
 func_declaration		: func_with_send | func_without_send;
-func_with_send			: DATA_TYPE FUNC_NAME '(' list_parameter ')' func_body;
-func_without_send		: 'VOID' FUNC_NAME	'(' list_parameter ')' func_body;
+func_with_send			: DATA_TYPE FUNCTION_NAME '(' list_parameter ')' func_body;
+func_without_send		: 'VOID' FUNCTION_NAME	'(' list_parameter ')' func_body;
 func_body				: '{' list_var list_statement '}';
 func_main				: 'RUN MAIN' func_body;
-					   
-			
 
 
 	//**** Lexer ****//
-	
-// ** usual ** *//
-LETTER			: [a-z]+ | [A-Z]+ ;
-NUMBER 			: [0-9]+ ;
-LETTER_NUMBER	: [NUMBER|LETTER];
-WS     			: [\n | \r | \b | \t | \f | ' ']+ -> skip;
-ASCII			: VAR_NAME | WS |
- 				 '\u0021'..'\u002f' |
- 				 '\u003a'..'\u0040' |
- 				 '\u005b'..'\u0060' |
- 				 '\u007b'..'\u007f' ;
-ASCII_CHARS		: ASCII+ | ASCII;
 
  // ** declarations ** //
-ID_CHARS		: [LETTER_NUMBER] | '_';
-VAR_NAME		: ID_CHARS+ | ID_CHARS;
-DATA_TYPE		:['INT'|'FLOAT'|'STRING'|'CHAR'];
+
+DATA_TYPE		:'INT'|'FLOAT'|'STRING'|'CHAR';
+IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
 INTEGER			: SIGN NUMBER;
 SIGN			: '+' | '-';
 FLOAT			: NUMBER '.' NUMBER;
 CHAR			: '^' ASCII '^';
 				  // ^ as '
 STRING			: '"' ASCII_CHARS '"';
- 
-FUNCTION_NAME		: [LETTER_NUMBER]+;						// why is there func name and function name?
-FUNC_NAME				: VAR_NAME;
-PARAMETER			: VAR_NAME ';' PARAMETER | VAR_NAME;
- 
+
+FUNCTION_NAME		: IDENTIFIER;
+PARAMETER			: IDENTIFIER ';' PARAMETER | IDENTIFIER;
+
+
+
  // ** expressions ** //
 
 NTERM				: NFACTOR '*' NTERM | NFACTOR '/' NTERM | NFACTOR '%' NTERM | NFACTOR;				//added NFACTOR before the *
-NFACTOR				: CHAR | INTEGER | FLOAT | VAR_NAME;												//removed NTERM
-					  
+NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER;												//removed NTERM
+
 BTERM				: BFACTOR '&&' BTERM | BFACTOR;
 BFACTOR				: '(' BTERM ')' |
 					  '!' BTERM |
-					  VAR_NAME;
-					  
+					  IDENTIFIER;
 
-					  
-					  
+
+
+
+// ** usual ** *//
+
+ASCII			: LETTER_NUMBER |
+ 				 '\u0021'..'\u002f' |
+ 				 '\u003a'..'\u0040' |
+ 				 '\u005b'..'\u0060' |
+ 				 '\u007b'..'\u007f' ;
+ASCII_CHARS		: ASCII+ | ASCII;
+WS     			: [\n\r\b\t\f ]+  -> skip;
+LETTER_NUMBER	: NUMBER|LETTER;
+LETTER			: [a-z] | [A-Z] ;
+NUMBER 			: [0-9] ;

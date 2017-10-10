@@ -22,30 +22,30 @@ public class NymtaxParser extends Parser {
 		T__17=18, T__18=19, T__19=20, T__20=21, T__21=22, T__22=23, T__23=24, 
 		T__24=25, T__25=26, T__26=27, T__27=28, T__28=29, T__29=30, T__30=31, 
 		T__31=32, T__32=33, T__33=34, T__34=35, T__35=36, T__36=37, T__37=38, 
-		T__38=39, T__39=40, LETTER=41, NUMBER=42, LETTER_NUMBER=43, WS=44, ASCII=45, 
-		ASCII_CHARS=46, ID_CHARS=47, VAR_NAME=48, DATA_TYPE=49, INTEGER=50, SIGN=51, 
-		FLOAT=52, CHAR=53, STRING=54, FUNCTION_NAME=55, FUNC_NAME=56, PARAMETER=57, 
-		NTERM=58, NFACTOR=59, BTERM=60, BFACTOR=61;
+		T__38=39, T__39=40, DATA_TYPE=41, IDENTIFIER=42, INTEGER=43, SIGN=44, 
+		FLOAT=45, CHAR=46, STRING=47, FUNCTION_NAME=48, PARAMETER=49, NTERM=50, 
+		NFACTOR=51, BTERM=52, BFACTOR=53, ASCII=54, ASCII_CHARS=55, WS=56, LETTER_NUMBER=57, 
+		LETTER=58, NUMBER=59;
 	public static final int
-		RULE_program = 0, RULE_var_declaration = 1, RULE_list_var = 2, RULE_list_var_name = 3, 
+		RULE_program = 0, RULE_var_declaration = 1, RULE_list_var = 2, RULE_list_IDENTIFIER = 3, 
 		RULE_const_declaration = 4, RULE_constant = 5, RULE_list_statement = 6, 
 		RULE_statement = 7, RULE_function_call_stat = 8, RULE_list_parameter = 9, 
 		RULE_send_statement = 10, RULE_expression = 11, RULE_string_expression = 12, 
 		RULE_numerical_expression = 13, RULE_boolean_expression = 14, RULE_boolean_logic = 15, 
 		RULE_relation_ops = 16, RULE_list_assign = 17, RULE_assign = 18, RULE_write_statement = 19, 
 		RULE_write_list = 20, RULE_read_statement = 21, RULE_input_data_type = 22, 
-		RULE_input_var_name = 23, RULE_when_statement = 24, RULE_otherwise_when_statement = 25, 
+		RULE_input_IDENTIFIER = 23, RULE_when_statement = 24, RULE_otherwise_when_statement = 25, 
 		RULE_condition_statement = 26, RULE_list_event = 27, RULE_base_statement = 28, 
 		RULE_loop_every_statement = 29, RULE_loop_throughout_statement = 30, RULE_loop_do_throughout_statement = 31, 
 		RULE_list_func_declaration = 32, RULE_func_declaration = 33, RULE_func_with_send = 34, 
 		RULE_func_without_send = 35, RULE_func_body = 36, RULE_func_main = 37;
 	public static final String[] ruleNames = {
-		"program", "var_declaration", "list_var", "list_var_name", "const_declaration", 
+		"program", "var_declaration", "list_var", "list_IDENTIFIER", "const_declaration", 
 		"constant", "list_statement", "statement", "function_call_stat", "list_parameter", 
 		"send_statement", "expression", "string_expression", "numerical_expression", 
 		"boolean_expression", "boolean_logic", "relation_ops", "list_assign", 
 		"assign", "write_statement", "write_list", "read_statement", "input_data_type", 
-		"input_var_name", "when_statement", "otherwise_when_statement", "condition_statement", 
+		"input_IDENTIFIER", "when_statement", "otherwise_when_statement", "condition_statement", 
 		"list_event", "base_statement", "loop_every_statement", "loop_throughout_statement", 
 		"loop_do_throughout_statement", "list_func_declaration", "func_declaration", 
 		"func_with_send", "func_without_send", "func_body", "func_main"
@@ -62,10 +62,10 @@ public class NymtaxParser extends Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, null, null, null, null, "LETTER", "NUMBER", "LETTER_NUMBER", "WS", 
-		"ASCII", "ASCII_CHARS", "ID_CHARS", "VAR_NAME", "DATA_TYPE", "INTEGER", 
-		"SIGN", "FLOAT", "CHAR", "STRING", "FUNCTION_NAME", "FUNC_NAME", "PARAMETER", 
-		"NTERM", "NFACTOR", "BTERM", "BFACTOR"
+		null, null, null, null, null, "DATA_TYPE", "IDENTIFIER", "INTEGER", "SIGN", 
+		"FLOAT", "CHAR", "STRING", "FUNCTION_NAME", "PARAMETER", "NTERM", "NFACTOR", 
+		"BTERM", "BFACTOR", "ASCII", "ASCII_CHARS", "WS", "LETTER_NUMBER", "LETTER", 
+		"NUMBER"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -265,28 +265,28 @@ public class NymtaxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class List_var_nameContext extends ParserRuleContext {
-		public TerminalNode VAR_NAME() { return getToken(NymtaxParser.VAR_NAME, 0); }
-		public List_var_nameContext list_var_name() {
-			return getRuleContext(List_var_nameContext.class,0);
+	public static class List_IDENTIFIERContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(NymtaxParser.IDENTIFIER, 0); }
+		public List_IDENTIFIERContext list_IDENTIFIER() {
+			return getRuleContext(List_IDENTIFIERContext.class,0);
 		}
-		public List_var_nameContext(ParserRuleContext parent, int invokingState) {
+		public List_IDENTIFIERContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_list_var_name; }
+		@Override public int getRuleIndex() { return RULE_list_IDENTIFIER; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).enterList_var_name(this);
+			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).enterList_IDENTIFIER(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).exitList_var_name(this);
+			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).exitList_IDENTIFIER(this);
 		}
 	}
 
-	public final List_var_nameContext list_var_name() throws RecognitionException {
-		List_var_nameContext _localctx = new List_var_nameContext(_ctx, getState());
-		enterRule(_localctx, 6, RULE_list_var_name);
+	public final List_IDENTIFIERContext list_IDENTIFIER() throws RecognitionException {
+		List_IDENTIFIERContext _localctx = new List_IDENTIFIERContext(_ctx, getState());
+		enterRule(_localctx, 6, RULE_list_IDENTIFIER);
 		try {
 			setState(93);
 			_errHandler.sync(this);
@@ -295,18 +295,18 @@ public class NymtaxParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(89);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				setState(90);
 				match(T__2);
 				setState(91);
-				list_var_name();
+				list_IDENTIFIER();
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(92);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				}
 				break;
 			}
@@ -324,7 +324,7 @@ public class NymtaxParser extends Parser {
 
 	public static class Const_declarationContext extends ParserRuleContext {
 		public TerminalNode DATA_TYPE() { return getToken(NymtaxParser.DATA_TYPE, 0); }
-		public TerminalNode VAR_NAME() { return getToken(NymtaxParser.VAR_NAME, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(NymtaxParser.IDENTIFIER, 0); }
 		public ConstantContext constant() {
 			return getRuleContext(ConstantContext.class,0);
 		}
@@ -351,7 +351,7 @@ public class NymtaxParser extends Parser {
 			setState(95);
 			match(DATA_TYPE);
 			setState(96);
-			match(VAR_NAME);
+			match(IDENTIFIER);
 			setState(97);
 			match(T__3);
 			setState(98);
@@ -585,7 +585,7 @@ public class NymtaxParser extends Parser {
 			setState(140);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case VAR_NAME:
+			case IDENTIFIER:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(125);
@@ -907,7 +907,7 @@ public class NymtaxParser extends Parser {
 		public String_expressionContext string_expression() {
 			return getRuleContext(String_expressionContext.class,0);
 		}
-		public TerminalNode VAR_NAME() { return getToken(NymtaxParser.VAR_NAME, 0); }
+		public TerminalNode IDENTIFIER() { return getToken(NymtaxParser.IDENTIFIER, 0); }
 		public TerminalNode STRING() { return getToken(NymtaxParser.STRING, 0); }
 		public String_expressionContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -957,11 +957,11 @@ public class NymtaxParser extends Parser {
 				string_expression();
 				}
 				break;
-			case VAR_NAME:
+			case IDENTIFIER:
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(168);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				}
 				break;
 			case STRING:
@@ -1334,9 +1334,9 @@ public class NymtaxParser extends Parser {
 	}
 
 	public static class AssignContext extends ParserRuleContext {
-		public List<TerminalNode> VAR_NAME() { return getTokens(NymtaxParser.VAR_NAME); }
-		public TerminalNode VAR_NAME(int i) {
-			return getToken(NymtaxParser.VAR_NAME, i);
+		public List<TerminalNode> IDENTIFIER() { return getTokens(NymtaxParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(NymtaxParser.IDENTIFIER, i);
 		}
 		public ConstantContext constant() {
 			return getRuleContext(ConstantContext.class,0);
@@ -1366,18 +1366,18 @@ public class NymtaxParser extends Parser {
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(219);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				setState(220);
 				match(T__2);
 				setState(221);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				}
 				break;
 			case 2:
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(222);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				setState(223);
 				match(T__2);
 				setState(224);
@@ -1446,9 +1446,9 @@ public class NymtaxParser extends Parser {
 		public Write_listContext write_list() {
 			return getRuleContext(Write_listContext.class,0);
 		}
-		public List<TerminalNode> VAR_NAME() { return getTokens(NymtaxParser.VAR_NAME); }
-		public TerminalNode VAR_NAME(int i) {
-			return getToken(NymtaxParser.VAR_NAME, i);
+		public List<TerminalNode> IDENTIFIER() { return getTokens(NymtaxParser.IDENTIFIER); }
+		public TerminalNode IDENTIFIER(int i) {
+			return getToken(NymtaxParser.IDENTIFIER, i);
 		}
 		public TerminalNode STRING() { return getToken(NymtaxParser.STRING, 0); }
 		public Write_listContext(ParserRuleContext parent, int invokingState) {
@@ -1485,7 +1485,7 @@ public class NymtaxParser extends Parser {
 						{
 						{
 						setState(232);
-						match(VAR_NAME);
+						match(IDENTIFIER);
 						}
 						}
 						break;
@@ -1546,7 +1546,7 @@ public class NymtaxParser extends Parser {
 				enterOuterAlt(_localctx, 4);
 				{
 				setState(249);
-				match(VAR_NAME);
+				match(IDENTIFIER);
 				}
 				break;
 			}
@@ -1566,8 +1566,8 @@ public class NymtaxParser extends Parser {
 		public Input_data_typeContext input_data_type() {
 			return getRuleContext(Input_data_typeContext.class,0);
 		}
-		public Input_var_nameContext input_var_name() {
-			return getRuleContext(Input_var_nameContext.class,0);
+		public Input_IDENTIFIERContext input_IDENTIFIER() {
+			return getRuleContext(Input_IDENTIFIERContext.class,0);
 		}
 		public Read_statementContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1598,7 +1598,7 @@ public class NymtaxParser extends Parser {
 			setState(255);
 			match(T__2);
 			setState(256);
-			input_var_name();
+			input_IDENTIFIER();
 			setState(257);
 			match(T__10);
 			}
@@ -1653,32 +1653,32 @@ public class NymtaxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class Input_var_nameContext extends ParserRuleContext {
-		public TerminalNode VAR_NAME() { return getToken(NymtaxParser.VAR_NAME, 0); }
-		public Input_var_nameContext(ParserRuleContext parent, int invokingState) {
+	public static class Input_IDENTIFIERContext extends ParserRuleContext {
+		public TerminalNode IDENTIFIER() { return getToken(NymtaxParser.IDENTIFIER, 0); }
+		public Input_IDENTIFIERContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_input_var_name; }
+		@Override public int getRuleIndex() { return RULE_input_IDENTIFIER; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).enterInput_var_name(this);
+			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).enterInput_IDENTIFIER(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).exitInput_var_name(this);
+			if ( listener instanceof NymtaxListener ) ((NymtaxListener)listener).exitInput_IDENTIFIER(this);
 		}
 	}
 
-	public final Input_var_nameContext input_var_name() throws RecognitionException {
-		Input_var_nameContext _localctx = new Input_var_nameContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_input_var_name);
+	public final Input_IDENTIFIERContext input_IDENTIFIER() throws RecognitionException {
+		Input_IDENTIFIERContext _localctx = new Input_IDENTIFIERContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_input_IDENTIFIER);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(262);
 			match(T__26);
 			setState(263);
-			match(VAR_NAME);
+			match(IDENTIFIER);
 			}
 		}
 		catch (RecognitionException re) {
@@ -2399,7 +2399,7 @@ public class NymtaxParser extends Parser {
 
 	public static class Func_with_sendContext extends ParserRuleContext {
 		public TerminalNode DATA_TYPE() { return getToken(NymtaxParser.DATA_TYPE, 0); }
-		public TerminalNode FUNC_NAME() { return getToken(NymtaxParser.FUNC_NAME, 0); }
+		public TerminalNode FUNCTION_NAME() { return getToken(NymtaxParser.FUNCTION_NAME, 0); }
 		public List_parameterContext list_parameter() {
 			return getRuleContext(List_parameterContext.class,0);
 		}
@@ -2429,7 +2429,7 @@ public class NymtaxParser extends Parser {
 			setState(392);
 			match(DATA_TYPE);
 			setState(393);
-			match(FUNC_NAME);
+			match(FUNCTION_NAME);
 			setState(394);
 			match(T__9);
 			setState(395);
@@ -2452,7 +2452,7 @@ public class NymtaxParser extends Parser {
 	}
 
 	public static class Func_without_sendContext extends ParserRuleContext {
-		public TerminalNode FUNC_NAME() { return getToken(NymtaxParser.FUNC_NAME, 0); }
+		public TerminalNode FUNCTION_NAME() { return getToken(NymtaxParser.FUNCTION_NAME, 0); }
 		public List_parameterContext list_parameter() {
 			return getRuleContext(List_parameterContext.class,0);
 		}
@@ -2482,7 +2482,7 @@ public class NymtaxParser extends Parser {
 			setState(399);
 			match(T__38);
 			setState(400);
-			match(FUNC_NAME);
+			match(FUNCTION_NAME);
 			setState(401);
 			match(T__9);
 			setState(402);
@@ -2618,7 +2618,7 @@ public class NymtaxParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3?\u01a1\4\2\t\2\4"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3=\u01a1\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -2648,79 +2648,79 @@ public class NymtaxParser extends Parser {
 		"\3!\3!\3!\3!\3!\3!\3!\3!\3!\3\"\3\"\3\"\3\"\5\"\u0185\n\"\3#\3#\5#\u0189"+
 		"\n#\3$\3$\3$\3$\3$\3$\3$\3%\3%\3%\3%\3%\3%\3%\3&\3&\3&\3&\3&\3\'\3\'\3"+
 		"\'\3\'\2\4\16\64(\2\4\6\b\n\f\16\20\22\24\26\30\32\34\36 \"$&(*,.\60\62"+
-		"\64\668:<>@BDFHJL\2\4\4\2\64\64\668\4\2\22\23\25\30\2\u01a8\2N\3\2\2\2"+
-		"\4R\3\2\2\2\6Y\3\2\2\2\b_\3\2\2\2\na\3\2\2\2\ff\3\2\2\2\16t\3\2\2\2\20"+
-		"\u008e\3\2\2\2\22\u0090\3\2\2\2\24\u0095\3\2\2\2\26\u0097\3\2\2\2\30\u00a2"+
-		"\3\2\2\2\32\u00ac\3\2\2\2\34\u00b3\3\2\2\2\36\u00ca\3\2\2\2 \u00d0\3\2"+
-		"\2\2\"\u00d2\3\2\2\2$\u00db\3\2\2\2&\u00e3\3\2\2\2(\u00e5\3\2\2\2*\u00fc"+
+		"\64\668:<>@BDFHJL\2\4\4\2--/\61\4\2\22\23\25\30\2\u01a8\2N\3\2\2\2\4R"+
+		"\3\2\2\2\6Y\3\2\2\2\b_\3\2\2\2\na\3\2\2\2\ff\3\2\2\2\16t\3\2\2\2\20\u008e"+
+		"\3\2\2\2\22\u0090\3\2\2\2\24\u0095\3\2\2\2\26\u0097\3\2\2\2\30\u00a2\3"+
+		"\2\2\2\32\u00ac\3\2\2\2\34\u00b3\3\2\2\2\36\u00ca\3\2\2\2 \u00d0\3\2\2"+
+		"\2\"\u00d2\3\2\2\2$\u00db\3\2\2\2&\u00e3\3\2\2\2(\u00e5\3\2\2\2*\u00fc"+
 		"\3\2\2\2,\u00fe\3\2\2\2.\u0105\3\2\2\2\60\u0108\3\2\2\2\62\u0132\3\2\2"+
 		"\2\64\u0134\3\2\2\2\66\u0148\3\2\2\28\u015c\3\2\2\2:\u015e\3\2\2\2<\u0162"+
 		"\3\2\2\2>\u016f\3\2\2\2@\u0177\3\2\2\2B\u0184\3\2\2\2D\u0188\3\2\2\2F"+
 		"\u018a\3\2\2\2H\u0191\3\2\2\2J\u0198\3\2\2\2L\u019d\3\2\2\2NO\5\n\6\2"+
-		"OP\5B\"\2PQ\5L\'\2Q\3\3\2\2\2RS\5\6\4\2S\5\3\2\2\2TU\7\63\2\2UZ\7\3\2"+
-		"\2VW\7\63\2\2WZ\7\4\2\2XZ\7\63\2\2YT\3\2\2\2YV\3\2\2\2YX\3\2\2\2Z\7\3"+
-		"\2\2\2[\\\7\62\2\2\\]\7\5\2\2]`\5\b\5\2^`\7\62\2\2_[\3\2\2\2_^\3\2\2\2"+
-		"`\t\3\2\2\2ab\7\63\2\2bc\7\62\2\2cd\7\6\2\2de\5\f\7\2e\13\3\2\2\2fg\t"+
-		"\2\2\2g\r\3\2\2\2hi\b\b\1\2ij\7\7\2\2jk\5\16\b\2kl\7\b\2\2lu\3\2\2\2m"+
-		"n\5\20\t\2no\7\t\2\2op\5\16\b\4pu\3\2\2\2qr\5\20\t\2rs\7\t\2\2su\3\2\2"+
-		"\2th\3\2\2\2tm\3\2\2\2tq\3\2\2\2u|\3\2\2\2vw\f\5\2\2wx\5\6\4\2xy\5\16"+
-		"\b\6y{\3\2\2\2zv\3\2\2\2{~\3\2\2\2|z\3\2\2\2|}\3\2\2\2}\17\3\2\2\2~|\3"+
-		"\2\2\2\177\u008f\5$\23\2\u0080\u008f\5\22\n\2\u0081\u008f\5\62\32\2\u0082"+
-		"\u008f\5\64\33\2\u0083\u008f\5\66\34\2\u0084\u008f\58\35\2\u0085\u008f"+
-		"\5:\36\2\u0086\u008f\5<\37\2\u0087\u008f\5> \2\u0088\u008f\5@!\2\u0089"+
-		"\u008f\5\26\f\2\u008a\u008b\7\n\2\2\u008b\u008f\7\t\2\2\u008c\u008d\7"+
-		"\13\2\2\u008d\u008f\7\t\2\2\u008e\177\3\2\2\2\u008e\u0080\3\2\2\2\u008e"+
-		"\u0081\3\2\2\2\u008e\u0082\3\2\2\2\u008e\u0083\3\2\2\2\u008e\u0084\3\2"+
-		"\2\2\u008e\u0085\3\2\2\2\u008e\u0086\3\2\2\2\u008e\u0087\3\2\2\2\u008e"+
-		"\u0088\3\2\2\2\u008e\u0089\3\2\2\2\u008e\u008a\3\2\2\2\u008e\u008c\3\2"+
-		"\2\2\u008f\21\3\2\2\2\u0090\u0091\79\2\2\u0091\u0092\7\f\2\2\u0092\u0093"+
-		"\5\24\13\2\u0093\u0094\7\r\2\2\u0094\23\3\2\2\2\u0095\u0096\7;\2\2\u0096"+
-		"\25\3\2\2\2\u0097\u0098\7\16\2\2\u0098\u0099\5\30\r\2\u0099\27\3\2\2\2"+
-		"\u009a\u00a3\5\32\16\2\u009b\u00a3\5\34\17\2\u009c\u00a3\5\36\20\2\u009d"+
-		"\u009e\5F$\2\u009e\u009f\7\f\2\2\u009f\u00a0\5\24\13\2\u00a0\u00a1\7\r"+
-		"\2\2\u00a1\u00a3\3\2\2\2\u00a2\u009a\3\2\2\2\u00a2\u009b\3\2\2\2\u00a2"+
-		"\u009c\3\2\2\2\u00a2\u009d\3\2\2\2\u00a3\31\3\2\2\2\u00a4\u00a5\7\17\2"+
-		"\2\u00a5\u00ad\5\32\16\2\u00a6\u00a7\7\20\2\2\u00a7\u00ad\5\32\16\2\u00a8"+
-		"\u00a9\7\21\2\2\u00a9\u00ad\5\32\16\2\u00aa\u00ad\7\62\2\2\u00ab\u00ad"+
-		"\78\2\2\u00ac\u00a4\3\2\2\2\u00ac\u00a6\3\2\2\2\u00ac\u00a8\3\2\2\2\u00ac"+
-		"\u00aa\3\2\2\2\u00ac\u00ab\3\2\2\2\u00ad\33\3\2\2\2\u00ae\u00af\7\17\2"+
-		"\2\u00af\u00b4\5\34\17\2\u00b0\u00b1\7\21\2\2\u00b1\u00b4\5\34\17\2\u00b2"+
-		"\u00b4\7<\2\2\u00b3\u00ae\3\2\2\2\u00b3\u00b0\3\2\2\2\u00b3\u00b2\3\2"+
-		"\2\2\u00b4\35\3\2\2\2\u00b5\u00b6\5\34\17\2\u00b6\u00b7\5\"\22\2\u00b7"+
-		"\u00b8\5\34\17\2\u00b8\u00cb\3\2\2\2\u00b9\u00ba\5\32\16\2\u00ba\u00bb"+
-		"\7\22\2\2\u00bb\u00bc\5\32\16\2\u00bc\u00cb\3\2\2\2\u00bd\u00be\5\32\16"+
-		"\2\u00be\u00bf\7\23\2\2\u00bf\u00c0\5\32\16\2\u00c0\u00cb\3\2\2\2\u00c1"+
-		"\u00c2\5 \21\2\u00c2\u00c3\7\22\2\2\u00c3\u00c4\5\36\20\2\u00c4\u00cb"+
-		"\3\2\2\2\u00c5\u00c6\5 \21\2\u00c6\u00c7\7\23\2\2\u00c7\u00c8\5\36\20"+
-		"\2\u00c8\u00cb\3\2\2\2\u00c9\u00cb\5 \21\2\u00ca\u00b5\3\2\2\2\u00ca\u00b9"+
-		"\3\2\2\2\u00ca\u00bd\3\2\2\2\u00ca\u00c1\3\2\2\2\u00ca\u00c5\3\2\2\2\u00ca"+
-		"\u00c9\3\2\2\2\u00cb\37\3\2\2\2\u00cc\u00cd\7>\2\2\u00cd\u00ce\7\24\2"+
-		"\2\u00ce\u00d1\5 \21\2\u00cf\u00d1\7>\2\2\u00d0\u00cc\3\2\2\2\u00d0\u00cf"+
-		"\3\2\2\2\u00d1!\3\2\2\2\u00d2\u00d3\t\3\2\2\u00d3#\3\2\2\2\u00d4\u00d5"+
-		"\5&\24\2\u00d5\u00d6\7\t\2\2\u00d6\u00d7\5$\23\2\u00d7\u00dc\3\2\2\2\u00d8"+
+		"OP\5B\"\2PQ\5L\'\2Q\3\3\2\2\2RS\5\6\4\2S\5\3\2\2\2TU\7+\2\2UZ\7\3\2\2"+
+		"VW\7+\2\2WZ\7\4\2\2XZ\7+\2\2YT\3\2\2\2YV\3\2\2\2YX\3\2\2\2Z\7\3\2\2\2"+
+		"[\\\7,\2\2\\]\7\5\2\2]`\5\b\5\2^`\7,\2\2_[\3\2\2\2_^\3\2\2\2`\t\3\2\2"+
+		"\2ab\7+\2\2bc\7,\2\2cd\7\6\2\2de\5\f\7\2e\13\3\2\2\2fg\t\2\2\2g\r\3\2"+
+		"\2\2hi\b\b\1\2ij\7\7\2\2jk\5\16\b\2kl\7\b\2\2lu\3\2\2\2mn\5\20\t\2no\7"+
+		"\t\2\2op\5\16\b\4pu\3\2\2\2qr\5\20\t\2rs\7\t\2\2su\3\2\2\2th\3\2\2\2t"+
+		"m\3\2\2\2tq\3\2\2\2u|\3\2\2\2vw\f\5\2\2wx\5\6\4\2xy\5\16\b\6y{\3\2\2\2"+
+		"zv\3\2\2\2{~\3\2\2\2|z\3\2\2\2|}\3\2\2\2}\17\3\2\2\2~|\3\2\2\2\177\u008f"+
+		"\5$\23\2\u0080\u008f\5\22\n\2\u0081\u008f\5\62\32\2\u0082\u008f\5\64\33"+
+		"\2\u0083\u008f\5\66\34\2\u0084\u008f\58\35\2\u0085\u008f\5:\36\2\u0086"+
+		"\u008f\5<\37\2\u0087\u008f\5> \2\u0088\u008f\5@!\2\u0089\u008f\5\26\f"+
+		"\2\u008a\u008b\7\n\2\2\u008b\u008f\7\t\2\2\u008c\u008d\7\13\2\2\u008d"+
+		"\u008f\7\t\2\2\u008e\177\3\2\2\2\u008e\u0080\3\2\2\2\u008e\u0081\3\2\2"+
+		"\2\u008e\u0082\3\2\2\2\u008e\u0083\3\2\2\2\u008e\u0084\3\2\2\2\u008e\u0085"+
+		"\3\2\2\2\u008e\u0086\3\2\2\2\u008e\u0087\3\2\2\2\u008e\u0088\3\2\2\2\u008e"+
+		"\u0089\3\2\2\2\u008e\u008a\3\2\2\2\u008e\u008c\3\2\2\2\u008f\21\3\2\2"+
+		"\2\u0090\u0091\7\62\2\2\u0091\u0092\7\f\2\2\u0092\u0093\5\24\13\2\u0093"+
+		"\u0094\7\r\2\2\u0094\23\3\2\2\2\u0095\u0096\7\63\2\2\u0096\25\3\2\2\2"+
+		"\u0097\u0098\7\16\2\2\u0098\u0099\5\30\r\2\u0099\27\3\2\2\2\u009a\u00a3"+
+		"\5\32\16\2\u009b\u00a3\5\34\17\2\u009c\u00a3\5\36\20\2\u009d\u009e\5F"+
+		"$\2\u009e\u009f\7\f\2\2\u009f\u00a0\5\24\13\2\u00a0\u00a1\7\r\2\2\u00a1"+
+		"\u00a3\3\2\2\2\u00a2\u009a\3\2\2\2\u00a2\u009b\3\2\2\2\u00a2\u009c\3\2"+
+		"\2\2\u00a2\u009d\3\2\2\2\u00a3\31\3\2\2\2\u00a4\u00a5\7\17\2\2\u00a5\u00ad"+
+		"\5\32\16\2\u00a6\u00a7\7\20\2\2\u00a7\u00ad\5\32\16\2\u00a8\u00a9\7\21"+
+		"\2\2\u00a9\u00ad\5\32\16\2\u00aa\u00ad\7,\2\2\u00ab\u00ad\7\61\2\2\u00ac"+
+		"\u00a4\3\2\2\2\u00ac\u00a6\3\2\2\2\u00ac\u00a8\3\2\2\2\u00ac\u00aa\3\2"+
+		"\2\2\u00ac\u00ab\3\2\2\2\u00ad\33\3\2\2\2\u00ae\u00af\7\17\2\2\u00af\u00b4"+
+		"\5\34\17\2\u00b0\u00b1\7\21\2\2\u00b1\u00b4\5\34\17\2\u00b2\u00b4\7\64"+
+		"\2\2\u00b3\u00ae\3\2\2\2\u00b3\u00b0\3\2\2\2\u00b3\u00b2\3\2\2\2\u00b4"+
+		"\35\3\2\2\2\u00b5\u00b6\5\34\17\2\u00b6\u00b7\5\"\22\2\u00b7\u00b8\5\34"+
+		"\17\2\u00b8\u00cb\3\2\2\2\u00b9\u00ba\5\32\16\2\u00ba\u00bb\7\22\2\2\u00bb"+
+		"\u00bc\5\32\16\2\u00bc\u00cb\3\2\2\2\u00bd\u00be\5\32\16\2\u00be\u00bf"+
+		"\7\23\2\2\u00bf\u00c0\5\32\16\2\u00c0\u00cb\3\2\2\2\u00c1\u00c2\5 \21"+
+		"\2\u00c2\u00c3\7\22\2\2\u00c3\u00c4\5\36\20\2\u00c4\u00cb\3\2\2\2\u00c5"+
+		"\u00c6\5 \21\2\u00c6\u00c7\7\23\2\2\u00c7\u00c8\5\36\20\2\u00c8\u00cb"+
+		"\3\2\2\2\u00c9\u00cb\5 \21\2\u00ca\u00b5\3\2\2\2\u00ca\u00b9\3\2\2\2\u00ca"+
+		"\u00bd\3\2\2\2\u00ca\u00c1\3\2\2\2\u00ca\u00c5\3\2\2\2\u00ca\u00c9\3\2"+
+		"\2\2\u00cb\37\3\2\2\2\u00cc\u00cd\7\66\2\2\u00cd\u00ce\7\24\2\2\u00ce"+
+		"\u00d1\5 \21\2\u00cf\u00d1\7\66\2\2\u00d0\u00cc\3\2\2\2\u00d0\u00cf\3"+
+		"\2\2\2\u00d1!\3\2\2\2\u00d2\u00d3\t\3\2\2\u00d3#\3\2\2\2\u00d4\u00d5\5"+
+		"&\24\2\u00d5\u00d6\7\t\2\2\u00d6\u00d7\5$\23\2\u00d7\u00dc\3\2\2\2\u00d8"+
 		"\u00d9\5&\24\2\u00d9\u00da\7\t\2\2\u00da\u00dc\3\2\2\2\u00db\u00d4\3\2"+
-		"\2\2\u00db\u00d8\3\2\2\2\u00dc%\3\2\2\2\u00dd\u00de\7\62\2\2\u00de\u00df"+
-		"\7\5\2\2\u00df\u00e4\7\62\2\2\u00e0\u00e1\7\62\2\2\u00e1\u00e2\7\5\2\2"+
-		"\u00e2\u00e4\5\f\7\2\u00e3\u00dd\3\2\2\2\u00e3\u00e0\3\2\2\2\u00e4\'\3"+
-		"\2\2\2\u00e5\u00e6\7\31\2\2\u00e6\u00e7\7\f\2\2\u00e7\u00e8\5*\26\2\u00e8"+
-		"\u00e9\7\r\2\2\u00e9)\3\2\2\2\u00ea\u00ec\7\62\2\2\u00eb\u00ea\3\2\2\2"+
-		"\u00ec\u00ed\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00ef"+
-		"\3\2\2\2\u00ef\u00fd\5*\26\2\u00f0\u00f1\7\32\2\2\u00f1\u00f3\78\2\2\u00f2"+
-		"\u00f4\7\32\2\2\u00f3\u00f2\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f3\3"+
-		"\2\2\2\u00f5\u00f6\3\2\2\2\u00f6\u00f7\3\2\2\2\u00f7\u00fd\5*\26\2\u00f8"+
-		"\u00f9\7\32\2\2\u00f9\u00fa\78\2\2\u00fa\u00fd\7\32\2\2\u00fb\u00fd\7"+
-		"\62\2\2\u00fc\u00eb\3\2\2\2\u00fc\u00f0\3\2\2\2\u00fc\u00f8\3\2\2\2\u00fc"+
-		"\u00fb\3\2\2\2\u00fd+\3\2\2\2\u00fe\u00ff\7\33\2\2\u00ff\u0100\7\f\2\2"+
-		"\u0100\u0101\5.\30\2\u0101\u0102\7\5\2\2\u0102\u0103\5\60\31\2\u0103\u0104"+
-		"\7\r\2\2\u0104-\3\2\2\2\u0105\u0106\7\34\2\2\u0106\u0107\7\63\2\2\u0107"+
-		"/\3\2\2\2\u0108\u0109\7\35\2\2\u0109\u010a\7\62\2\2\u010a\61\3\2\2\2\u010b"+
-		"\u010c\7\36\2\2\u010c\u010d\7\f\2\2\u010d\u010e\5\36\20\2\u010e\u010f"+
-		"\7\r\2\2\u010f\u0110\7\7\2\2\u0110\u0111\5\20\t\2\u0111\u0112\7\b\2\2"+
-		"\u0112\u0133\3\2\2\2\u0113\u0114\7\36\2\2\u0114\u0115\7\f\2\2\u0115\u0116"+
-		"\5\36\20\2\u0116\u0117\7\r\2\2\u0117\u0118\7\7\2\2\u0118\u0119\5\20\t"+
-		"\2\u0119\u011a\7\b\2\2\u011a\u011b\7\37\2\2\u011b\u011c\7\f\2\2\u011c"+
-		"\u011d\5\36\20\2\u011d\u011e\7\r\2\2\u011e\u011f\7\7\2\2\u011f\u0120\5"+
-		"\20\t\2\u0120\u0121\7\b\2\2\u0121\u0133\3\2\2\2\u0122\u0123\7\36\2\2\u0123"+
+		"\2\2\u00db\u00d8\3\2\2\2\u00dc%\3\2\2\2\u00dd\u00de\7,\2\2\u00de\u00df"+
+		"\7\5\2\2\u00df\u00e4\7,\2\2\u00e0\u00e1\7,\2\2\u00e1\u00e2\7\5\2\2\u00e2"+
+		"\u00e4\5\f\7\2\u00e3\u00dd\3\2\2\2\u00e3\u00e0\3\2\2\2\u00e4\'\3\2\2\2"+
+		"\u00e5\u00e6\7\31\2\2\u00e6\u00e7\7\f\2\2\u00e7\u00e8\5*\26\2\u00e8\u00e9"+
+		"\7\r\2\2\u00e9)\3\2\2\2\u00ea\u00ec\7,\2\2\u00eb\u00ea\3\2\2\2\u00ec\u00ed"+
+		"\3\2\2\2\u00ed\u00eb\3\2\2\2\u00ed\u00ee\3\2\2\2\u00ee\u00ef\3\2\2\2\u00ef"+
+		"\u00fd\5*\26\2\u00f0\u00f1\7\32\2\2\u00f1\u00f3\7\61\2\2\u00f2\u00f4\7"+
+		"\32\2\2\u00f3\u00f2\3\2\2\2\u00f4\u00f5\3\2\2\2\u00f5\u00f3\3\2\2\2\u00f5"+
+		"\u00f6\3\2\2\2\u00f6\u00f7\3\2\2\2\u00f7\u00fd\5*\26\2\u00f8\u00f9\7\32"+
+		"\2\2\u00f9\u00fa\7\61\2\2\u00fa\u00fd\7\32\2\2\u00fb\u00fd\7,\2\2\u00fc"+
+		"\u00eb\3\2\2\2\u00fc\u00f0\3\2\2\2\u00fc\u00f8\3\2\2\2\u00fc\u00fb\3\2"+
+		"\2\2\u00fd+\3\2\2\2\u00fe\u00ff\7\33\2\2\u00ff\u0100\7\f\2\2\u0100\u0101"+
+		"\5.\30\2\u0101\u0102\7\5\2\2\u0102\u0103\5\60\31\2\u0103\u0104\7\r\2\2"+
+		"\u0104-\3\2\2\2\u0105\u0106\7\34\2\2\u0106\u0107\7+\2\2\u0107/\3\2\2\2"+
+		"\u0108\u0109\7\35\2\2\u0109\u010a\7,\2\2\u010a\61\3\2\2\2\u010b\u010c"+
+		"\7\36\2\2\u010c\u010d\7\f\2\2\u010d\u010e\5\36\20\2\u010e\u010f\7\r\2"+
+		"\2\u010f\u0110\7\7\2\2\u0110\u0111\5\20\t\2\u0111\u0112\7\b\2\2\u0112"+
+		"\u0133\3\2\2\2\u0113\u0114\7\36\2\2\u0114\u0115\7\f\2\2\u0115\u0116\5"+
+		"\36\20\2\u0116\u0117\7\r\2\2\u0117\u0118\7\7\2\2\u0118\u0119\5\20\t\2"+
+		"\u0119\u011a\7\b\2\2\u011a\u011b\7\37\2\2\u011b\u011c\7\f\2\2\u011c\u011d"+
+		"\5\36\20\2\u011d\u011e\7\r\2\2\u011e\u011f\7\7\2\2\u011f\u0120\5\20\t"+
+		"\2\u0120\u0121\7\b\2\2\u0121\u0133\3\2\2\2\u0122\u0123\7\36\2\2\u0123"+
 		"\u0124\7\f\2\2\u0124\u0125\5\36\20\2\u0125\u0126\7\r\2\2\u0126\u0127\7"+
 		"\7\2\2\u0127\u0128\5\20\t\2\u0128\u0129\7\b\2\2\u0129\u012a\7\37\2\2\u012a"+
 		"\u012b\7\f\2\2\u012b\u012c\5\36\20\2\u012c\u012d\7\r\2\2\u012d\u012e\7"+
@@ -2751,9 +2751,9 @@ public class NymtaxParser extends Parser {
 		"\2\u0180\u0181\5D#\2\u0181\u0182\5B\"\2\u0182\u0185\3\2\2\2\u0183\u0185"+
 		"\7(\2\2\u0184\u0180\3\2\2\2\u0184\u0183\3\2\2\2\u0185C\3\2\2\2\u0186\u0189"+
 		"\5F$\2\u0187\u0189\5H%\2\u0188\u0186\3\2\2\2\u0188\u0187\3\2\2\2\u0189"+
-		"E\3\2\2\2\u018a\u018b\7\63\2\2\u018b\u018c\7:\2\2\u018c\u018d\7\f\2\2"+
+		"E\3\2\2\2\u018a\u018b\7+\2\2\u018b\u018c\7\62\2\2\u018c\u018d\7\f\2\2"+
 		"\u018d\u018e\5\24\13\2\u018e\u018f\7\r\2\2\u018f\u0190\5J&\2\u0190G\3"+
-		"\2\2\2\u0191\u0192\7)\2\2\u0192\u0193\7:\2\2\u0193\u0194\7\f\2\2\u0194"+
+		"\2\2\2\u0191\u0192\7)\2\2\u0192\u0193\7\62\2\2\u0193\u0194\7\f\2\2\u0194"+
 		"\u0195\5\24\13\2\u0195\u0196\7\r\2\2\u0196\u0197\5J&\2\u0197I\3\2\2\2"+
 		"\u0198\u0199\7\7\2\2\u0199\u019a\5\6\4\2\u019a\u019b\5\16\b\2\u019b\u019c"+
 		"\7\b\2\2\u019cK\3\2\2\2\u019d\u019e\7*\2\2\u019e\u019f\5J&\2\u019fM\3"+

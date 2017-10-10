@@ -38,15 +38,15 @@ public interface NymtaxListener extends ParseTreeListener {
 	 */
 	void exitList_var(NymtaxParser.List_varContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NymtaxParser#list_var_name}.
+	 * Enter a parse tree produced by {@link NymtaxParser#list_IDENTIFIER}.
 	 * @param ctx the parse tree
 	 */
-	void enterList_var_name(NymtaxParser.List_var_nameContext ctx);
+	void enterList_IDENTIFIER(NymtaxParser.List_IDENTIFIERContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link NymtaxParser#list_var_name}.
+	 * Exit a parse tree produced by {@link NymtaxParser#list_IDENTIFIER}.
 	 * @param ctx the parse tree
 	 */
-	void exitList_var_name(NymtaxParser.List_var_nameContext ctx);
+	void exitList_IDENTIFIER(NymtaxParser.List_IDENTIFIERContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NymtaxParser#const_declaration}.
 	 * @param ctx the parse tree
@@ -238,15 +238,15 @@ public interface NymtaxListener extends ParseTreeListener {
 	 */
 	void exitInput_data_type(NymtaxParser.Input_data_typeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link NymtaxParser#input_var_name}.
+	 * Enter a parse tree produced by {@link NymtaxParser#input_IDENTIFIER}.
 	 * @param ctx the parse tree
 	 */
-	void enterInput_var_name(NymtaxParser.Input_var_nameContext ctx);
+	void enterInput_IDENTIFIER(NymtaxParser.Input_IDENTIFIERContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link NymtaxParser#input_var_name}.
+	 * Exit a parse tree produced by {@link NymtaxParser#input_IDENTIFIER}.
 	 * @param ctx the parse tree
 	 */
-	void exitInput_var_name(NymtaxParser.Input_var_nameContext ctx);
+	void exitInput_IDENTIFIER(NymtaxParser.Input_IDENTIFIERContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link NymtaxParser#when_statement}.
 	 * @param ctx the parse tree

@@ -17,11 +17,16 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import antlr4.generate.NymtaxParser;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 
+import antlr4.custom.DetectionNymtaxWalker;
 import antlr4.generate.NymtaxLexer;
+
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 public class NymTaxUI {
 
@@ -29,6 +34,7 @@ public class NymTaxUI {
 	private String code;
     private JList consoleList = new JList();
     private DefaultListModel tokenListModel;
+    private ParseTreeListener walker = new DetectionNymtaxWalker();
 	JScrollPane OutputscrollPane;
 	/**
 	 * Launch the application.
@@ -50,6 +56,7 @@ public class NymTaxUI {
 	 * Create the application.
 	 */
 	public NymTaxUI() {
+		
 		initialize();
 	}
 
@@ -112,13 +119,18 @@ public class NymTaxUI {
                 tokenListModel = new DefaultListModel();
 
                 for (Token t : tokens.getTokens()){
-                    System.out.println("Token #" + t.getTokenIndex() + "!");
+                    System.out.println("Token #" + t.getTokenIndex());
                     System.out.println("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
                             + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
                     tokenListModel.addElement("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
                             + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
-                    System.out.println("Token #" + t.getTokenIndex() + "!");
+                    System.out.println("----------------");
                 }
+				NymtaxParser parser = new NymtaxParser(tokens);
+
+
+
+				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
 
                 consoleList.setModel(tokenListModel);
                 OutputscrollPane.setViewportView(consoleList);
