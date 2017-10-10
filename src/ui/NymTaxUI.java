@@ -27,7 +27,7 @@ public class NymTaxUI {
 
 	private JFrame frame;
 	private String code;
-    private JList consoleList;
+    private JList consoleList = new JList();
     private DefaultListModel tokenListModel;
 	JScrollPane OutputscrollPane;
 	/**
@@ -121,7 +121,7 @@ public class NymTaxUI {
                 }
 
                 consoleList.setModel(tokenListModel);
-                OutputArea.setViewportView(consoleList);
+                OutputscrollPane.setViewportView(consoleList);
                 consoleList.setLayoutOrientation(JList.VERTICAL);
 
                 //ParseTree t = parser.compilationUnit();
