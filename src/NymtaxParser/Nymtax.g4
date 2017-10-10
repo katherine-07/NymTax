@@ -70,7 +70,7 @@ boolean_expression	: numerical_expression relation_ops numerical_expression |
 
 boolean_logic		: bool_term ('||' boolean_logic)? | bool_term ('&&' boolean_logic)?;
 
-bool_term				: '(' boolean_logic ')' |
+bool_term			: '(' boolean_logic ')' |
 					  '!' boolean_logic |
 					  IDENTIFIER;
 relation_ops		: '~~' | '!~' | '>~' | '<~' | '>>' | '<<' ;
