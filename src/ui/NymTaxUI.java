@@ -150,6 +150,14 @@ public class NymTaxUI {
 		comboBox.setMaximumRowCount(5);
 		comboBox.setBounds(new Rectangle(89, 563, 123, 28));
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Verbose", "Error"}));
+		comboBox.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				int out = comboBox.getSelectedIndex();
+			}
+		});
 	}
 
 }
