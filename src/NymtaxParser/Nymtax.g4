@@ -127,16 +127,10 @@ CHAR			: '^' ASCII '^';
 				  // ^ as '
 STRING			: '"' ASCII_CHARS '"';
 
-
-
  // ** expressions ** //
 
 NTERM				: NFACTOR '*' NTERM | NFACTOR '/' NTERM | NFACTOR '%' NTERM | NFACTOR;				//added NFACTOR before the *
 NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER;												//removed NTERM
-
-
-
-
 
 // ** usual ** *//
 
