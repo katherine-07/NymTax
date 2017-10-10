@@ -9,7 +9,7 @@
         <module name="NymTax" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
+    <bytecodeTargetLevel>
       <module name="NymTax" target="1.8" />
     </bytecodeTargetLevel>
   </component>
