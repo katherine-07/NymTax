@@ -128,7 +128,7 @@ func_main				: 'RUN MAIN' func_body;
 
 	//**** Lexer ****//
 	
-// ** usual ** //
+// ** usual ** *//
 LETTER			: [a-z]+ | [A-Z]+ ;
 NUMBER 			: [0-9]+ ;
 LETTER_NUMBER	: [NUMBER|LETTER];
@@ -139,7 +139,6 @@ ASCII			: VAR_NAME | WS |
  				 '\u005b'..'\u0060' |
  				 '\u007b'..'\u007f' ;
 ASCII_CHARS		: ASCII+ | ASCII;
-EPSILON			: '';
 
  // ** declarations ** //
 ID_CHARS		: [LETTER_NUMBER] | '_';
