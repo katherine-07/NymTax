@@ -7,18 +7,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Token;
+
+import antlr4.generate.NymtaxLexer;
+
 public class NymTaxUI {
 
 	private JFrame frame;
-
+	private String code;
+    private JList consoleList;
+    private DefaultListModel tokenListModel;
+	JScrollPane OutputscrollPane;
 	/**
 	 * Launch the application.
 	 */
@@ -51,7 +62,7 @@ public class NymTaxUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setTitle("NymTax-workspace");
-		JScrollPane OutputscrollPane = new JScrollPane();
+		OutputscrollPane = new JScrollPane();
 		OutputscrollPane.setBounds(15, 599, 1168, 189);
 		frame.getContentPane().add(OutputscrollPane);
 		
@@ -88,6 +99,36 @@ public class NymTaxUI {
 		menuBar.add(UploadButton);
 		
 		JButton RunButton = new JButton("Run");
+		RunButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+
+                System.out.println("Run button clicked!");
+                code = CodeArea.getText();
+
+                NymtaxLexer lex = new NymtaxLexer(CharStreams.fromString(code));
+                CommonTokenStream tokens = new CommonTokenStream(lex);
+                tokens.fill();
+
+                tokenListModel = new DefaultListModel();
+
+                for (Token t : tokens.getTokens()){
+                    System.out.println("Token #" + t.getTokenIndex() + "!");
+                    System.out.println("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
+                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+                    tokenListModel.addElement("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
+                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+                    System.out.println("Token #" + t.getTokenIndex() + "!");
+                }
+
+                consoleList.setModel(tokenListModel);
+                OutputArea.setViewportView(consoleList);
+                consoleList.setLayoutOrientation(JList.VERTICAL);
+
+                //ParseTree t = parser.compilationUnit();
+                // txtConsole.setText("\n Parse tree: " + t.toStringTree(parser) );
+
+			}
+		});
 		RunButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		menuBar.add(RunButton);
 		
