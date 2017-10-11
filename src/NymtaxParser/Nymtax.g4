@@ -24,7 +24,7 @@ list_var		: DATA_TYPE '[]' |
 
 // CONSTANT DECLARATION //
 list_constants      : const_declaration+;
-const_declaration 	: list_var IDENTIFIER '~' constant;
+const_declaration 	: list_var IDENTIFIER '~' constant ';';
 constant			: INTEGER | FLOAT | CHAR | STRING;
 
 
@@ -139,7 +139,7 @@ ASCII			: LETTER_NUMBER |
  				 '\u003a'..'\u0040' |
  				 '\u005b'..'\u0060' |
  				 '\u007b'..'\u007f' ;
-ASCII_CHARS		: ASCII+ | ASCII;
+ASCII_CHARS		: ASCII+ ;
 WS     			: [\n\r\b\t\f ]+  -> skip;
 LETTER_NUMBER	: NUMBER|LETTER;
 LETTER			: [a-z] | [A-Z] ;

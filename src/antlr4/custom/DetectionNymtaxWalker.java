@@ -65,8 +65,9 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	@Override
 	public void enterEveryRule(ParserRuleContext ctx) {
 		// TODO Auto-generated method stub
-		if(output == 0)
+		if(output == 0) 
 			logger.info("[INFO] Entering every rule..");
+
 	}
 
 	@Override
@@ -79,8 +80,7 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	@Override
 	public void visitErrorNode(ErrorNode node) {
 		// TODO Auto-generated method stub
-		logger.info("[ERROR] " + node.getText());
-		
+	
 	}
 
 

@@ -5,11 +5,17 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -18,11 +24,13 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 import antlr4.generate.NymtaxParser;
+
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Token;
 
 import antlr4.custom.DetectionNymtaxWalker;
+import antlr4.custom.NymtaxErrorListener;
 import antlr4.generate.NymtaxLexer;
 
 import org.antlr.v4.runtime.tree.ParseTreeListener;
@@ -40,6 +48,7 @@ public class NymTaxUI {
     private DefaultListModel tokenListModel;
 	private JTextArea CodeArea;
 	private JComboBox comboBox;
+	private NymtaxErrorListener listener = new NymtaxErrorListener();
 	private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
 	JScrollPane OutputscrollPane;
 	/**
@@ -79,6 +88,7 @@ public class NymTaxUI {
 		OutputscrollPane.setBounds(15, 599, 1168, 189);
 		frame.getContentPane().add(OutputscrollPane);
 		
+		JFileChooser fc = new JFileChooser();
 		JTextArea OutputArea = new JTextArea();
 		OutputscrollPane.setViewportView(OutputArea);
 		
@@ -103,10 +113,47 @@ public class NymTaxUI {
 		menuBar.setBounds(0, 0, 1196, 31);
 		frame.getContentPane().add(menuBar);
 		
+		FileChooserDemo fcd = new FileChooserDemo();
 		JButton UploadButton = new JButton("Upload");
 		UploadButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		UploadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				 if (e.getSource() == UploadButton) {
+				        int returnVal = fc.showOpenDialog(fcd);
+
+				        if (returnVal == JFileChooser.APPROVE_OPTION) {
+				        	
+				        	BufferedReader fileReader = null;
+				    		String rawData = new String();
+				            File file = fc.getSelectedFile();
+				     
+							try {
+								fileReader = new BufferedReader(new FileReader(file));
+								rawData = new String();
+								while((rawData = fileReader.readLine()) != null) {
+									CodeArea.append(rawData + "\n");
+								}
+							} catch (IOException e1) {
+								// TODO Auto-generated catch block
+								e1.printStackTrace();
+							}finally
+							{
+								try
+								{
+									fileReader.close();
+								}
+								catch (IOException e1)
+								{
+									e1.printStackTrace();
+								}
+							}
+				            
+				            //This is where a real application would open the file.
+				            logger.info("Opening: " + file.getName() + ".");
+				        } else {
+				            logger.info("Open command cancelled by user.");
+				        }
+				   }
 			}
 		});
 		menuBar.add(UploadButton);
@@ -139,7 +186,7 @@ public class NymTaxUI {
                     System.out.println("----------------");
                 }
 				NymtaxParser parser = new NymtaxParser(tokens);
-
+				parser.addErrorListener(listener);
 
 
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
@@ -162,11 +209,13 @@ public class NymTaxUI {
 		comboBox.setMaximumRowCount(5);
 		comboBox.setBounds(new Rectangle(89, 563, 123, 28));
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Verbose", "Error"}));
+		
 		comboBox.addActionListener(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				System.out.println("CHANGE" + comboBox.getSelectedIndex());
 					walker.setOutput(comboBox.getSelectedIndex());
 			}
 		});
