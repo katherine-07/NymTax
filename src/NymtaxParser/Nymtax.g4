@@ -8,47 +8,43 @@ grammar Nymtax;
  * 		}; 
  */
 
-program   		: const_declaration list_func_declaration func_main;
           
           
 	//**** Parser ****//
-	
+
+program   		: list_constants? list_func_declaration? func_main;
+
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var; 		
+var_declaration	: list_var  IDENTIFIER ('~' IDENTIFIER)? | const_declaration;
 list_var		: DATA_TYPE '[]' |
 				  DATA_TYPE '*'  |
 				  DATA_TYPE;
-list_var_name 	: VAR_NAME '~' list_var_name |
-				  // ~ as =   	
-				  VAR_NAME;
+// ~ as =
 
 // CONSTANT DECLARATION //
-const_declaration 	: DATA_TYPE VAR_NAME '=' constant;
+list_constants      : const_declaration+;
+const_declaration 	: list_var IDENTIFIER '~' constant ';';
 constant			: INTEGER | FLOAT | CHAR | STRING;
 
-	
+
 // STATEMENT //
 list_statement	: '{' list_statement '}'|
-				  list_statement list_var list_statement |
-				  statement ';' list_statement |
-				  statement ';' ;
-statement		: list_assign |
+				  ( statement ';' )+;
+statement		: var_declaration |
+                  assign |
 				  function_call_stat |
 				  when_statement |
-				  otherwise_when_statement |
 				  condition_statement |
-				  list_event |
-				  base_statement |
 				  loop_every_statement |
 				  loop_throughout_statement |
 				  loop_do_throughout_statement |
 				  send_statement |
-				  'STOP' ';' |
-				  'PROCEED' ';' ;
-				  
-function_call_stat	: FUNCTION_NAME '(' list_parameter ')' ;
-list_parameter		: PARAMETER;
+				  'STOP' |
+				  'PROCEED' ;
+
+function_call_stat	:   IDENTIFIER '(' list_parameter? ')'  ;
+list_parameter		:   IDENTIFIER ((';' IDENTIFIER)+)?;
 
 
 send_statement		: 'SEND' expression;
@@ -60,7 +56,7 @@ expression			: string_expression |
 string_expression	: '+' string_expression |
 					  '!' string_expression |
 					  '-' string_expression |
-					  VAR_NAME |
+					  IDENTIFIER |
 					  STRING;
 numerical_expression : '+' numerical_expression |
 					  '-' numerical_expression |
@@ -72,99 +68,79 @@ boolean_expression	: numerical_expression relation_ops numerical_expression |
 					  boolean_logic '!~' boolean_expression |
 					  boolean_logic;
 
-boolean_logic		: BTERM '||' boolean_logic | BTERM;
+boolean_logic		: bool_term ('||' boolean_logic)? | bool_term ('&&' boolean_logic)?;
+
+bool_term			: '(' boolean_logic ')' |
+					  '!' boolean_logic |
+					  IDENTIFIER;
 relation_ops		: '~~' | '!~' | '>~' | '<~' | '>>' | '<<' ;
 
 
 // ASSIGNMENT STATEMENTS //
-list_assign 	: assign ';' list_assign | assign ';';
-assign			: VAR_NAME '~' VAR_NAME |
-				  VAR_NAME '~' constant;
-			
+assign			: IDENTIFIER '~' IDENTIFIER |
+				  IDENTIFIER '~' constant;
+
 // INPUT OUTPUT //
 write_statement	: 'WRITE' '(' write_list ')' ;
-write_list		: VAR_NAME + write_list |
+write_list		: IDENTIFIER + write_list |
 				  '"' STRING '"' + write_list |
 				  '"' STRING '"' |
-				  VAR_NAME;
-read_statement	: 'READ' '(' input_data_type '~' input_var_name ')';
+				  IDENTIFIER;
+read_statement	: 'READ' '(' input_data_type '~' input_IDENTIFIER ')';
 input_data_type : '%' DATA_TYPE;
-input_var_name	: '@' VAR_NAME;
+input_IDENTIFIER	: '@' IDENTIFIER;
 
 // CONDITIONAL STATEMENTS //
-when_statement	: 'WHEN' '(' boolean_expression ')' '{' statement '}' |
-				  'WHEN' '(' boolean_expression ')' '{' statement '}'
-				  'OTHERWISE' '(' boolean_expression ')' '{' statement '}' |
-				  'WHEN' '(' boolean_expression ')' '{' statement '}'
-				  'OTHERWISE' '(' boolean_expression ')' '{' statement '}'
-				  otherwise_when_statement;
+when_statement	: 'WHEN' '(' boolean_expression ')' '{' list_statement? '}' (otherwise_when_statement+)? ('OTHERWISE' '{' list_statement? '}')?;
+otherwise_when_statement:	'OTHERWISE WHEN' '(' boolean_expression ')' '{' list_statement? '}' ;
 
-otherwise_when_statement:	'OTHERWISE WHEN' '(' boolean_expression ')' '{' statement '}' 
-							otherwise_when_statement |
-							otherwise_when_statement '{' statement '}' ;
+condition_statement	: 'CONDITION' '(' expression ')' '{' list_event? base_statement '}' ;
 
-condition_statement	: 'CONDITION' '(' expression ')' '{' list_event base_statement '}' ;
+list_event	: ('EVENT' expression ':' list_statement?)+;
 
-list_event	: 'EVENT' expression ':' list_statement list_event |
-			  'EVENT' expression ':' list_statement;
-
-base_statement : 'BASE' ':' list_statement;
+base_statement : 'BASE' ':' list_statement?;
 
 // LOOP STATEMENTS //
-loop_every_statement : 'EVERY' '(' assign ';' boolean_expression ';' assign';' ')' '{' statement '}' ;
-loop_throughout_statement : 'THROUGHOUT' '(' boolean_expression ')' '{' statement '}';
-loop_do_throughout_statement : 'DO' '{' statement '}' 'THROUGHOUT' '(' boolean_expression ')' ;
+loop_every_statement : 'EVERY' '(' assign ';' boolean_expression ';' assign';' ')' '{' list_statement? '}' ;
+loop_throughout_statement : 'THROUGHOUT' '(' boolean_expression ')' '{' list_statement? '}';
+loop_do_throughout_statement : 'DO' '{' list_statement? '}' 'THROUGHOUT' '(' boolean_expression ')' ;
 
 // FUNCTIONS //
-list_func_declaration	: func_declaration list_func_declaration | '\n' ;
+list_func_declaration	: func_declaration+;
 func_declaration		: func_with_send | func_without_send;
-func_with_send			: DATA_TYPE FUNC_NAME '(' list_parameter ')' func_body;
-func_without_send		: 'VOID' FUNC_NAME	'(' list_parameter ')' func_body;
-func_body				: '{' list_var list_statement '}';
+func_with_send			: DATA_TYPE function_call_stat func_body;
+func_without_send		: 'VOID' function_call_stat func_body;
+func_body				: '{' list_statement? '}';
 func_main				: 'RUN MAIN' func_body;
-					   
-			
 
 
 	//**** Lexer ****//
-	
-// ** usual ** *//
-LETTER			: [a-z]+ | [A-Z]+ ;
-NUMBER 			: [0-9]+ ;
-LETTER_NUMBER	: [NUMBER|LETTER];
-WS     			: [\n | \r | \b | \t | \f | ' ']+ -> skip;
-ASCII			: VAR_NAME | WS |
- 				 '\u0021'..'\u002f' |
- 				 '\u003a'..'\u0040' |
- 				 '\u005b'..'\u0060' |
- 				 '\u007b'..'\u007f' ;
-ASCII_CHARS		: ASCII+ | ASCII;
 
  // ** declarations ** //
-ID_CHARS		: [LETTER_NUMBER] | '_';
-VAR_NAME		: ID_CHARS+ | ID_CHARS;
-DATA_TYPE		:['INT'|'FLOAT'|'STRING'|'CHAR'];
+
+DATA_TYPE		:'INT'|'FLOAT'|'STRING'|'CHAR';
+IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
 INTEGER			: SIGN NUMBER;
 SIGN			: '+' | '-';
 FLOAT			: NUMBER '.' NUMBER;
 CHAR			: '^' ASCII '^';
 				  // ^ as '
 STRING			: '"' ASCII_CHARS '"';
- 
-FUNCTION_NAME		: [LETTER_NUMBER]+;						// why is there func name and function name?
-FUNC_NAME				: VAR_NAME;
-PARAMETER			: VAR_NAME ';' PARAMETER | VAR_NAME;
- 
+
  // ** expressions ** //
 
 NTERM				: NFACTOR '*' NTERM | NFACTOR '/' NTERM | NFACTOR '%' NTERM | NFACTOR;				//added NFACTOR before the *
-NFACTOR				: CHAR | INTEGER | FLOAT | VAR_NAME;												//removed NTERM
-					  
-BTERM				: BFACTOR '&&' BTERM | BFACTOR;
-BFACTOR				: '(' BTERM ')' |
-					  '!' BTERM |
-					  VAR_NAME;
-					  
+NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER;												//removed NTERM
 
-					  
-					  
+// ** usual ** *//
+
+ASCII			: LETTER_NUMBER |
+ 				 '\u0021'..'\u002f' |
+ 				 '\u003a'..'\u0040' |
+ 				 '\u005b'..'\u0060' |
+ 				 '\u007b'..'\u007f' ;
+ASCII_CHARS		: ASCII+ ;
+WS     			: [\n\r\b\t\f ]+  -> skip;
+LETTER_NUMBER	: NUMBER|LETTER;
+LETTER			: [a-z] | [A-Z] ;
+NUMBER 			: [0-9] ;
