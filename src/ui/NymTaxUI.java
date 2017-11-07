@@ -25,9 +25,7 @@ import javax.swing.JTextArea;
 
 import antlr4.generate.NymtaxParser;
 
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.*;
 
 import antlr4.custom.DetectionNymtaxWalker;
 import antlr4.custom.NymtaxErrorListener;
@@ -90,6 +88,8 @@ public class NymTaxUI {
 		
 		JFileChooser fc = new JFileChooser();
 		JTextArea OutputArea = new JTextArea();
+		OutputArea.setEditable(false);
+		OutputArea.setFont(new Font("Monospaced", Font.PLAIN, 16));
 		OutputscrollPane.setViewportView(OutputArea);
 		
 		JLabel lblOutput = new JLabel("Output :");
@@ -102,6 +102,7 @@ public class NymTaxUI {
 		frame.getContentPane().add(CodescrollPane);
 		
 		CodeArea = new JTextArea();
+		CodeArea.setFont(new Font("Monospaced", Font.PLAIN, 20));
 		CodescrollPane.setViewportView(CodeArea);
 		
 		JLabel lblCode = new JLabel("Code :");
@@ -188,7 +189,7 @@ public class NymTaxUI {
 				NymtaxParser parser = new NymtaxParser(tokens);
 				parser.addErrorListener(listener);
 
-
+				parser.setErrorHandler(new DefaultErrorStrategy());
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
 
                 consoleList.setModel(tokenListModel);
