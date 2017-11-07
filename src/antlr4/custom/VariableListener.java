@@ -1,7 +1,6 @@
 package antlr4.custom;
 
 import antlr4.generate.NymtaxBaseListener;
-import antlr4.generate.NymtaxBaseVisitor;
 import antlr4.generate.NymtaxParser;
 
 import java.util.Stack;
@@ -47,11 +46,13 @@ public class VariableListener extends NymtaxBaseListener {
         }
     }
     @Override public void enterFunc_main(NymtaxParser.Func_mainContext ctx) {
+        System.out.println("New scope");
         scopes.push(new Scope(scopes.peek()));
 
     }
     @Override
     public void enterFunc_declaration(NymtaxParser.Func_declarationContext ctx) {
+        System.out.println("New scope");
         scopes.push(new Scope(scopes.peek()));
     }
 

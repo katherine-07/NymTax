@@ -50,6 +50,7 @@ public class NymTaxUI {
 	private JComboBox comboBox;
 	private NymtaxErrorListener listener = new NymtaxErrorListener();
 	private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
+	private ANTLRErrorStrategy errorStrategy = new DefaultErrorStrategy();
 	JScrollPane OutputscrollPane;
 	/**
 	 * Launch the application.
@@ -174,20 +175,14 @@ public class NymTaxUI {
 
                 tokenListModel = new DefaultListModel();
 
-                for (Token t : tokens.getTokens()){
-                    System.out.println("Token #" + t.getTokenIndex());
-                    System.out.println("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
-                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
-                    
-                    tokenListModel.addElement("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
-                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
-                    
-                    if(0 == walker.getOutput())
-                    	logger.info("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
-                            + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
+				if(0 == walker.getOutput()) {
+					for (Token t : tokens.getTokens()) {
+						logger.info("[TOKEN] Token #" + (t.getTokenIndex() + 1) + " found: "
+								+ t.getText() + " | Type: " + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
 
-                    System.out.println("----------------");
-                }
+						System.out.println("----------------");
+					}
+				}
 				NymtaxParser parser = new NymtaxParser(tokens);
 				parser.addErrorListener(listener);
 
@@ -195,9 +190,8 @@ public class NymTaxUI {
 				ParseTree tree = parser.program();
 				ParseTreeWalker.DEFAULT.walk( new VariableListener(), tree);
 				//
-				parser.reset();
 
-				parser.setErrorHandler(new DefaultErrorStrategy());
+				parser.setErrorHandler(errorStrategy);
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
 
                 consoleList.setModel(tokenListModel);
@@ -211,7 +205,7 @@ public class NymTaxUI {
 		});
 		RunButton.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		menuBar.add(RunButton);
-		
+
 		comboBox= new JComboBox();
 		comboBox.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		frame.getContentPane().add(comboBox);

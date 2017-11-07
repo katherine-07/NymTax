@@ -111,6 +111,8 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	@Override
 	public void enterData_type(NymtaxParser.Data_typeContext ctx) {
 
+		if(output == 0)
+			logger.info("[INFO] Data type declaration");
 	}
 
 	@Override
