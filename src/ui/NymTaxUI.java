@@ -23,7 +23,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import antlr4.custom.VariableListener;
 import antlr4.generate.NymtaxParser;
 
 import org.antlr.v4.runtime.*;
@@ -185,11 +184,7 @@ public class NymTaxUI {
 				}
 				NymtaxParser parser = new NymtaxParser(tokens);
 				parser.addErrorListener(listener);
-
-				//
-				ParseTree tree = parser.program();
-				ParseTreeWalker.DEFAULT.walk( new VariableListener(), tree);
-				//
+//
 
 				parser.setErrorHandler(errorStrategy);
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());

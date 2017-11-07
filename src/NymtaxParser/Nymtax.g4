@@ -126,7 +126,7 @@ statement		: var_declaration |
 				  STOP |
 				  PROCEED ;
 
-function_call_stat	:   (IDENTIFIER DOT)? IDENTIFIER LPAREN list_parameter? RPAREN;
+function_call_stat	:   IDENTIFIER LPAREN list_parameter? RPAREN;
 list_parameter		:   IDENTIFIER ((COMMA IDENTIFIER)+)?;
 
 
