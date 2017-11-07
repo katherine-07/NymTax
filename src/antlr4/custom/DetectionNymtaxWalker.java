@@ -1,6 +1,7 @@
 package antlr4.custom;
 
 import antlr4.generate.NymtaxListener;
+import antlr4.generate.NymtaxParser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
@@ -105,6 +106,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 		// TODO Auto-generated method stub
 		if(output == 0)
 			logger.info("[INFO] --- END PROGRAM --- ");
+	}
+
+	@Override
+	public void enterData_type(NymtaxParser.Data_typeContext ctx) {
+
+	}
+
+	@Override
+	public void exitData_type(NymtaxParser.Data_typeContext ctx) {
+
 	}
 
 	@Override

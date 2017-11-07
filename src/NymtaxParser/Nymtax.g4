@@ -36,7 +36,7 @@ VOID    : 'VOID';
 
 // §3.10.7 The Null Literal
 
-NullLiteral
+NULL
     :   'null'
     ;
 

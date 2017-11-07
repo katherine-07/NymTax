@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import antlr4.custom.VariableListener;
 import antlr4.generate.NymtaxParser;
 
 import org.antlr.v4.runtime.*;
@@ -31,6 +32,7 @@ import antlr4.custom.DetectionNymtaxWalker;
 import antlr4.custom.NymtaxErrorListener;
 import antlr4.generate.NymtaxLexer;
 
+import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.apache.log4j.Logger;
@@ -183,11 +185,17 @@ public class NymTaxUI {
                     if(0 == walker.getOutput())
                     	logger.info("[TOKEN] Token #" + (t.getTokenIndex()+1) + " found: "
                             + t.getText() + " | Type: "  + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
-                    
+
                     System.out.println("----------------");
                 }
 				NymtaxParser parser = new NymtaxParser(tokens);
 				parser.addErrorListener(listener);
+
+				//
+				ParseTree tree = parser.program();
+				ParseTreeWalker.DEFAULT.walk( new VariableListener(), tree);
+				//
+				parser.reset();
 
 				parser.setErrorHandler(new DefaultErrorStrategy());
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
