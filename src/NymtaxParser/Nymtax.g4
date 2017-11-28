@@ -125,37 +125,42 @@ data_type : INT | FLO | CHR | STRNG;
 
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)? | const_declaration | array;
-list_var		: data_type LBRACK RBRACK |
-				  data_type MUL  |
-				  data_type;
+var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)?
+                    | const_declaration
+                    | array_initialization;
+
+list_var		: data_type LBRACK RBRACK
+                    | data_type MUL
+                    | data_type;
 // ~ as =
 
 // CONSTANT DECLARATION //
 list_constants      : (const_declaration SEMI )+;
 const_declaration 	: list_var IDENTIFIER ASSIGN constant ;
-constant			: INTEGER | FLOAT | CHAR | STRING;
+constant			: INTEGER
+                        | FLOAT
+                        | CHAR | STRING;
 
 // ARRAY INITIALIZARION //
-array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK SEMI|
-                            data_type IDENTIFIER LBRACK RBRACK ASSIGN LBRACE (NUMBER)+ (COMMA)+ RBRACE SEMI;
+array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK SEMI
+                            | data_type IDENTIFIER LBRACK RBRACK ASSIGN LBRACE (NUMBER)+ (COMMA)+ RBRACE SEMI;
 
 // STATEMENT //
-list_statement	: LBRACE list_statement RBRACE|
-				  ( statement SEMI )+;
-statement		: var_declaration |
-                  assign |
-				  function_call_stat |
-				  when_statement |
-				  condition_statement |
-				  loop_every_statement |
-				  loop_throughout_statement |
-				  loop_do_throughout_statement |
-				  send_statement |
-				  write_statement |
-				  read_statement |
-				  STOP |
-				  PROCEED ;
+list_statement	: LBRACE list_statement RBRACE
+                    | ( statement SEMI )+;
+statement		: var_declaration
+                    | assign
+                    | function_call_stat
+                    | when_statement
+                    | condition_statement
+                    | loop_every_statement
+				    | loop_throughout_statement
+				    | loop_do_throughout_statement
+				    | send_statement
+				    | write_statement
+				    | read_statement
+				    | STOP
+				    | PROCEED ;
 
 function_call_stat	:   IDENTIFIER LPAREN list_parameter? RPAREN;
 list_parameter		:   IDENTIFIER ((COMMA IDENTIFIER)+)?;
@@ -163,31 +168,33 @@ list_parameter		:   IDENTIFIER ((COMMA IDENTIFIER)+)?;
 
 send_statement		: SEND expression;
 
-expression			: string_expression |
-					  numerical_expression |
-					  boolean_expression |
-					  func_with_send LPAREN list_parameter RPAREN;
-string_expression	: ADD string_expression |
-					  NOT string_expression |
-					  SUB string_expression |
-					  IDENTIFIER |
-					  STRING;
-numerical_expression : ADD numerical_expression |
-					   SUB numerical_expression |
-					   NTERM;
-boolean_expression	: numerical_expression relation_ops numerical_expression |
-					  string_expression EQUAL string_expression |
-					  string_expression NOTEQUAL string_expression |
-					  boolean_logic EQUAL boolean_expression |
-					  boolean_logic NOTEQUAL boolean_expression |
-					  boolean_logic;
+expression			: string_expression
+                    | numerical_expression
+                    | boolean_expression
+                    | func_with_send LPAREN list_parameter RPAREN;
 
-boolean_logic		: bool_term (OR boolean_logic)? | bool_term (AND boolean_logic)?;
+string_expression	: ADD string_expression
+                    | NOT string_expression
+                    | SUB string_expression
+                    | IDENTIFIER
+                    | STRING;
 
-bool_term			: LPAREN boolean_logic RPAREN |
-					  NOT boolean_logic |
-					  IDENTIFIER;
-relation_ops		: EQUAL | NOTEQUAL | LE | GE | GT | LT ;
+numerical_expression : ADD numerical_expression
+                        | SUB numerical_expression
+                        | NTERM;
+
+boolean_expression	: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) numerical_expression     #boolean_numerical
+                    | string_expression op=(EQUAL|NOTEQUAL) string_expression                                   #boolean_string
+                    | boolean_logic op=(EQUAL|NOTEQUAL) boolean_expression                                      #boolean_equality
+                    | boolean_logic                                                                             #boolean_log;
+
+boolean_logic		: bool_term OR boolean_logic    #boolean_or
+                    | bool_term AND boolean_logic   #boolean_and
+                    | bool_term                     #boolean_term;
+
+bool_term			: LPAREN boolean_logic RPAREN   #boolean_paren
+                        | NOT boolean_logic         #boolean_not
+                        | IDENTIFIER                #boolean_variable;
 
 
 // ASSIGNMENT STATEMENTS //
@@ -196,10 +203,11 @@ assign			: IDENTIFIER ASSIGN IDENTIFIER |
 
 // INPUT OUTPUT //
 write_statement	: WRITE LPAREN write_list RPAREN ;
-write_list		: IDENTIFIER + write_list |
-				  STRING + write_list |
-				  STRING |
-				  IDENTIFIER;
+write_list		: IDENTIFIER + write_list
+                | STRING + write_list
+                | STRING
+                | IDENTIFIER;
+
 read_statement	: READ LPAREN input_data_type COMMA input_IDENTIFIER RPAREN;
 input_data_type : MOD data_type;
 input_IDENTIFIER	: AT_SIGN IDENTIFIER;
@@ -221,7 +229,8 @@ loop_do_throughout_statement : DO LBRACE list_statement? RBRACE THROUGHOUT LPARE
 
 // FUNCTIONS //
 list_func_declaration	: func_declaration+;
-func_declaration		: func_with_send | func_without_send;
+func_declaration		: func_with_send
+                            | func_without_send;
 func_with_send			: data_type function_call_stat func_body;
 func_without_send		: VOID function_call_stat func_body;
 func_body				: LBRACE list_statement? RBRACE;
