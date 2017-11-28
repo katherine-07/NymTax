@@ -193,9 +193,6 @@ public class NymTaxUI {
 				parser.reset();
 
 				ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
-
-
-
                 consoleList.setModel(tokenListModel);
                 OutputscrollPane.setViewportView(consoleList);
                 consoleList.setLayoutOrientation(JList.VERTICAL);

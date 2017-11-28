@@ -64,4 +64,5 @@ $RECYCLE.BIN/
 /bin/
 /target/
 /src/antlr4/generate
+/lib/antlr4/generate
 /.idea/

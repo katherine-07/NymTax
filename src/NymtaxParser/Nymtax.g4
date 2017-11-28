@@ -179,9 +179,13 @@ string_expression	: ADD string_expression
                     | IDENTIFIER
                     | STRING;
 
-numerical_expression : ADD numerical_expression
-                        | SUB numerical_expression
-                        | NTERM;
+numerical_expression :  LPAREN numerical_expression RPAREN |
+                        NFACTOR ADD numerical_expression |
+                        NFACTOR SUB numerical_expression |
+                        NFACTOR MUL numerical_expression |
+                        NFACTOR DIV numerical_expression |
+                        NFACTOR MOD numerical_expression |
+                        NFACTOR;
 
 boolean_expression	: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) numerical_expression     #boolean_numerical
                     | string_expression op=(EQUAL|NOTEQUAL) string_expression                                   #boolean_string
@@ -195,8 +199,6 @@ boolean_logic		: bool_term OR boolean_logic    #boolean_or
 bool_term			: LPAREN boolean_logic RPAREN   #boolean_paren
                         | NOT boolean_logic         #boolean_not
                         | IDENTIFIER                #boolean_variable;
-
-
 // ASSIGNMENT STATEMENTS //
 assign			: IDENTIFIER ASSIGN IDENTIFIER |
 				  IDENTIFIER ASSIGN constant;
@@ -239,6 +241,10 @@ func_main				: RUN_MAIN func_body;
 
 	//**** Lexer ****//
 
+ // ** expressions ** //
+
+NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER ;												//removed
+
  // ** declarations ** //
 
 IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
@@ -247,11 +253,6 @@ SIGN			: ADD | SUB;
 FLOAT			: NUMBER DOT NUMBER;
 CHAR			: CARET ASCII CARET;
 				  // ^ as '
-
- // ** expressions ** //
-
-NTERM				: NFACTOR '*' NTERM | NFACTOR '/' NTERM | NFACTOR '%' NTERM | NFACTOR;				//added NFACTOR before the *
-NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER;												//removed NTERM
 
 // ** usual ** *//
 
