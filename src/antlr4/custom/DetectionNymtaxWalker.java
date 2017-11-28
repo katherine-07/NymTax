@@ -9,9 +9,6 @@ import org.apache.log4j.Logger;
 
 import antlr4.generate.NymtaxParser.AssignContext;
 import antlr4.generate.NymtaxParser.Base_statementContext;
-import antlr4.generate.NymtaxParser.Bool_termContext;
-import antlr4.generate.NymtaxParser.Boolean_expressionContext;
-import antlr4.generate.NymtaxParser.Boolean_logicContext;
 import antlr4.generate.NymtaxParser.Condition_statementContext;
 import antlr4.generate.NymtaxParser.Const_declarationContext;
 import antlr4.generate.NymtaxParser.ConstantContext;
@@ -37,7 +34,6 @@ import antlr4.generate.NymtaxParser.Numerical_expressionContext;
 import antlr4.generate.NymtaxParser.Otherwise_when_statementContext;
 import antlr4.generate.NymtaxParser.ProgramContext;
 import antlr4.generate.NymtaxParser.Read_statementContext;
-import antlr4.generate.NymtaxParser.Relation_opsContext;
 import antlr4.generate.NymtaxParser.Send_statementContext;
 import antlr4.generate.NymtaxParser.StatementContext;
 import antlr4.generate.NymtaxParser.String_expressionContext;
@@ -184,6 +180,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	}
 
 	@Override
+	public void enterArray_initialization(NymtaxParser.Array_initializationContext ctx) {
+
+	}
+
+	@Override
+	public void exitArray_initialization(NymtaxParser.Array_initializationContext ctx) {
+
+	}
+
+	@Override
 	public void enterList_statement(List_statementContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0)
@@ -298,47 +304,124 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	}
 
 	@Override
-	public void enterBoolean_expression(Boolean_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Boolean expression found: " + ctx.getText());
+	public void enterBoolean_and(NymtaxParser.Boolean_andContext ctx) {
+
 	}
 
 	@Override
-	public void exitBoolean_expression(Boolean_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of the boolean expressions.");
+	public void exitBoolean_and(NymtaxParser.Boolean_andContext ctx) {
+
 	}
 
 	@Override
-	public void enterBoolean_logic(Boolean_logicContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Boolean logic found: " +ctx.getText());
+	public void enterBoolean_log(NymtaxParser.Boolean_logContext ctx) {
+
 	}
 
 	@Override
-	public void exitBoolean_logic(Boolean_logicContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of boolean logic statements.");
+	public void exitBoolean_log(NymtaxParser.Boolean_logContext ctx) {
+
 	}
 
 	@Override
-	public void enterRelation_ops(Relation_opsContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Relational operation found: " +ctx.getText());
+	public void enterBoolean_or(NymtaxParser.Boolean_orContext ctx) {
+
 	}
 
 	@Override
-	public void exitRelation_ops(Relation_opsContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of relational operators.");
+	public void exitBoolean_or(NymtaxParser.Boolean_orContext ctx) {
+
 	}
 
+	@Override
+	public void enterBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_not(NymtaxParser.Boolean_notContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_not(NymtaxParser.Boolean_notContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_term(NymtaxParser.Boolean_termContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_term(NymtaxParser.Boolean_termContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+
+	}
+
+	@Override
+	public void enterBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+
+	}
+
+	@Override
+	public void exitBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+
+	}
 	@Override
 	public void enterAssign(AssignContext ctx) {
 		// TODO Auto-generated method stub
@@ -651,20 +734,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 		// TODO Auto-generated method stub
 		if(output == 0)
 			logger.info("[INFO] END OF CONSTANT LIST");
-	}
-
-	@Override
-	public void enterBool_term(Bool_termContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Boolean term found: " +ctx.getText());
-	}
-
-	@Override
-	public void exitBool_term(Bool_termContext ctx) {
-		// TODO Auto-generated method stub
-	//	if(output == 0)
-	//		logger.info("[INFO] Exiting boolean term.");
 	}
 
 }

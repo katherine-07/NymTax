@@ -5,6 +5,11 @@ import java.util.Set;
 
 public interface Scope{
 
+    public static final int
+        TYPE_FUNCTION   = -1,
+        TYPE_MAIN       = -2;
+
+
     String getIdentifier();
 
     Scope getParentScope();

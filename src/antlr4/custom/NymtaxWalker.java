@@ -32,7 +32,24 @@ public class NymtaxWalker extends NymtaxBaseListener {
                 //TODO: ERROR variable already exists exception
 
             } else {
-                Symbol newSymbol = new Symbol(varName, ctx.list_var().data_type().getText(), true);
+                int type = 0;
+                NymtaxParser.Data_typeContext dtCtx = ctx.list_var().data_type();
+                String INT = dtCtx.INT().getText();
+                String FLO = dtCtx.FLO().getText();
+                String CHR = dtCtx.CHR().getText();
+                String STR = dtCtx.STRNG().getText();
+
+                if(dtCtx.getText().equals(INT)){
+                    type = NymtaxParser.INT;
+                }else if(dtCtx.getText().equals(FLO)){
+                    type = NymtaxParser.FLO;
+                }else if(dtCtx.getText().equals(CHR)){
+                    type = NymtaxParser.CHR;
+                }else if(dtCtx.getText().equals(STR)){
+                    type = NymtaxParser.STRNG;
+                }
+
+                    Symbol newSymbol = new Symbol(varName, type, true);
                 currentFunc.declare(newSymbol);
                 if (ctx.IDENTIFIER(1) != null) {
                     if(currentFunc.isDeclared(ctx.IDENTIFIER(1).getText())) {
@@ -55,8 +72,24 @@ public class NymtaxWalker extends NymtaxBaseListener {
         if(currentFunc.isDeclared(varName)){
             //TODO: ERROR variable already exists exception
 
-        }else{
-            Symbol newSymbol = new Symbol(varName, ctx.list_var().data_type().getText(), true);
+        }else{int type = 0;
+            NymtaxParser.Data_typeContext dtCtx = ctx.list_var().data_type();
+            String INT = dtCtx.INT().getText();
+            String FLO = dtCtx.FLO().getText();
+            String CHR = dtCtx.CHR().getText();
+            String STR = dtCtx.STRNG().getText();
+
+            if(dtCtx.getText().equals(INT)){
+                type = NymtaxParser.INT;
+            }else if(dtCtx.getText().equals(FLO)){
+                type = NymtaxParser.FLO;
+            }else if(dtCtx.getText().equals(CHR)){
+                type = NymtaxParser.CHR;
+            }else if(dtCtx.getText().equals(STR)){
+                type = NymtaxParser.STRNG;
+            }
+
+            Symbol newSymbol = new Symbol(varName, type, true);
             currentFunc.declare(newSymbol);
             if(ctx.constant() != null){
                 currentFunc.initialize(newSymbol, ctx.constant().getText());
@@ -123,17 +156,7 @@ public class NymtaxWalker extends NymtaxBaseListener {
         List<ParseTree> tree = ctx.boolean_expression().children;
 
         if(tree.get(0) instanceof NymtaxParser.Numerical_expressionContext){
-                NymtaxParser.Numerical_expressionContext Num1 = (NymtaxParser.Numerical_expressionContext) tree.get(0);
-                NymtaxParser.Relation_opsContext relation = (NymtaxParser.Relation_opsContext) tree.get(1);
-                NymtaxParser.Numerical_expressionContext Num2 = (NymtaxParser.Numerical_expressionContext) tree.get(2);
 
-                if(relation.EQUAL() != null){
-
-                }else if (relation.NOTEQUAL() != null){
-
-                } else if (relation.GE() != null){
-
-                }
         }
 
 

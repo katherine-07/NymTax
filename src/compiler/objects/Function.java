@@ -13,7 +13,7 @@ public class Function extends Symbol implements Scope {
     private ParserRuleContext ctx;
 
     public Function(String id, Scope parent, ParserRuleContext ctx){
-        super(id, "func", true);
+        super(id, Scope.TYPE_FUNCTION, true);
         symbols = new HashMap<String, Symbol>();
         this.parent = parent;
         this.ctx = ctx;
