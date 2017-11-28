@@ -105,6 +105,9 @@ CARET           : '^';
 MOD             : '%';
 AT_SIGN         : '@';
 
+TRUE            : 'true';
+FALSE           : 'false';
+
 ADD_ASSIGN      : '+=';
 SUB_ASSIGN      : '-=';
 MUL_ASSIGN      : '*=';
@@ -185,18 +188,22 @@ numerical_expression: numerical_expression op=(MUL|DIV|MOD) numerical_expression
                     | '('numerical_expression')'                                 # numerical_paren
                     | SUB '('numerical_expression')'                             # numerical_negparen ;
 
-boolean_expression	: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) numerical_expression     #boolean_numerical
+
+boolean_expression		: boolean_expression OR boolean_expression    #boolean_or
+                    | boolean_expression AND boolean_expression   #boolean_and
+                    | boolean_logic                                   #boolean_log;
+
+boolean_logic 	: LPAREN boolean_expression RPAREN      #boolean_paren
+                    | NOT boolean_expression            #boolean_not
+                    | bool_term                         #boolean_term;
+
+
+bool_term			: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) numerical_expression     #boolean_numerical
                     | string_expression op=(EQUAL|NOTEQUAL) string_expression                                   #boolean_string
-                    | boolean_logic op=(EQUAL|NOTEQUAL) boolean_expression                                      #boolean_equality
-                    | boolean_logic                                                                             #boolean_log;
-
-boolean_logic		: bool_term OR boolean_logic    #boolean_or
-                    | bool_term AND boolean_logic   #boolean_and
-                    | bool_term                     #boolean_term;
-
-bool_term			: LPAREN boolean_logic RPAREN   #boolean_paren
-                        | NOT boolean_logic         #boolean_not
-                        | IDENTIFIER                #boolean_variable;
+                    | bool_term op=(EQUAL|NOTEQUAL) bool_term                                   #boolean_equality
+                    | IDENTIFIER                                                                #boolean_variable
+                    | TRUE                                                                      #boolean_true
+                    | FALSE                                                                     #boolean_false;
 // ASSIGNMENT STATEMENTS //
 assign			: IDENTIFIER ASSIGN IDENTIFIER |
 				  IDENTIFIER ASSIGN constant;

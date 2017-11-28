@@ -1,9 +1,9 @@
 package compiler.objects;
 
-//  class to stare variables and functions
+//  class to store variables and functions
 public class Symbol {
     protected String identifier;
-    protected String dataType;
+    protected int dataType;
     protected boolean isField;
     protected boolean isInitialized;
 
@@ -17,7 +17,7 @@ public class Symbol {
 
     protected Object value;
 
-    public Symbol(String id, String type, boolean isField){
+    public Symbol(String id, int type, boolean isField){
         identifier = id;
         dataType = type;
         this.isField = isField;
@@ -33,7 +33,7 @@ public class Symbol {
         return identifier;
     }
 
-    public String getDataType() {
+    public int getDataType() {
         return dataType;
     }
 
