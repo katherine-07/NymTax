@@ -136,14 +136,19 @@ expression			: string_expression |
 					  numerical_expression |
 					  boolean_expression |
 					  func_with_send LPAREN list_parameter RPAREN;
-string_expression	: ADD string_expression |
-					  NOT string_expression |
-					  SUB string_expression |
+string_expression	: string_expression ADD string_expression |
 					  IDENTIFIER |
 					  STRING;
-numerical_expression : ADD numerical_expression |
-					   SUB numerical_expression |
-					   NTERM;
+numerical_expression :  LPAREN numerical_expression RPAREN |
+                        NFACTOR ADD numerical_expression |
+                        NFACTOR SUB numerical_expression |
+                        NFACTOR MUL numerical_expression |
+                        NFACTOR DIV numerical_expression |
+                        NFACTOR MOD numerical_expression |
+                        NFACTOR;
+
+
+
 boolean_expression	: numerical_expression relation_ops numerical_expression |
 					  string_expression EQUAL string_expression |
 					  string_expression NOTEQUAL string_expression |
@@ -199,6 +204,10 @@ func_main				: RUN_MAIN func_body;
 
 	//**** Lexer ****//
 
+ // ** expressions ** //
+
+NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER ;												//removed
+
  // ** declarations ** //
 
 IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
@@ -208,11 +217,6 @@ FLOAT			: NUMBER DOT NUMBER;
 CHAR			: CARET ASCII CARET;
 				  // ^ as '
 STRING			: '"' ASCII_CHARS '"';
-
- // ** expressions ** //
-
-NTERM				: NFACTOR '*' NTERM | NFACTOR '/' NTERM | NFACTOR '%' NTERM | NFACTOR;				//added NFACTOR before the *
-NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER;												//removed NTERM
 
 // ** usual ** *//
 

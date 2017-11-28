@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import antlr4.custom.NymtaxWalker;
 import antlr4.generate.NymtaxParser;
 
 import org.antlr.v4.runtime.*;
@@ -188,6 +189,10 @@ public class NymTaxUI {
 
 				parser.setErrorHandler(errorStrategy);
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
+
+				parser.reset();
+
+				ParseTreeWalker.DEFAULT.walk(new NymtaxWalker(), parser.program());
 
                 consoleList.setModel(tokenListModel);
                 OutputscrollPane.setViewportView(consoleList);
