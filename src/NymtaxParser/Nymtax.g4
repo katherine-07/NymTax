@@ -32,6 +32,31 @@ INT     : 'INTEGER';
 FLO     : 'FLOAT';
 CHR     : 'CHAR';
 STRNG   : 'STRING';
+
+// STRING SEQUENCES --------
+
+STRING
+    :   QUOTE StringCharacters? QUOTE
+    ;
+
+fragment
+StringCharacters
+    :   StringCharacter+
+    ;
+
+fragment
+StringCharacter
+    :   ~["\\]
+    |   EscapeSequence
+    ;
+
+fragment
+EscapeSequence
+    :   '\\' [btnfr"'\\] ;
+
+// STRING SEQUENCES -------------
+
+
 VOID    : 'VOID';
 
 // §3.10.7 The Null Literal
@@ -51,6 +76,7 @@ RBRACK          : ']';
 SEMI            : ';';
 COMMA           : ',';
 DOT             : '.';
+QUOTE           : '"';
 
 // §3.12 Operators
 
@@ -93,11 +119,13 @@ RSHIFT          : '>>';
 RSHIFT_ASSIGN   : '>>=';
 URSHIFT_ASSIGN  : '>>>=';
 
+NEW       : 'NEW';
+
 data_type : INT | FLO | CHR | STRNG;
 
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)? | const_declaration;
+var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)? | const_declaration | array;
 list_var		: data_type LBRACK RBRACK |
 				  data_type MUL  |
 				  data_type;
@@ -108,6 +136,9 @@ list_constants      : (const_declaration SEMI )+;
 const_declaration 	: list_var IDENTIFIER ASSIGN constant ;
 constant			: INTEGER | FLOAT | CHAR | STRING;
 
+// ARRAY INITIALIZARION //
+array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK SEMI|
+                            data_type IDENTIFIER LBRACK RBRACK ASSIGN LBRACE (NUMBER)+ (COMMA)+ RBRACE SEMI;
 
 // STATEMENT //
 list_statement	: LBRACE list_statement RBRACE|
@@ -207,7 +238,6 @@ SIGN			: ADD | SUB;
 FLOAT			: NUMBER DOT NUMBER;
 CHAR			: CARET ASCII CARET;
 				  // ^ as '
-STRING			: '"' ASCII_CHARS '"';
 
  // ** expressions ** //
 
@@ -222,7 +252,7 @@ ASCII			: LETTER_NUMBER |
  				 '\u005b'..'\u0060' |
  				 '\u007b'..'\u007f' ;
 ASCII_CHARS		: ASCII+ ;
-WS     			: [\n\r\b\t\f ]+  -> skip;
+WS  :  [ \t\r\n\u000C]+ -> skip ;
 LETTER_NUMBER	: NUMBER|LETTER;
 LETTER			: [a-z] | [A-Z] ;
 NUMBER 			: [0-9] ;

@@ -23,6 +23,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import antlr4.custom.NymtaxWalker;
 import antlr4.generate.NymtaxParser;
 
 import org.antlr.v4.runtime.*;
@@ -49,6 +50,7 @@ public class NymTaxUI {
 	private JComboBox comboBox;
 	private NymtaxErrorListener listener = new NymtaxErrorListener();
 	private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
+	private NymtaxWalker mainWalker = new NymtaxWalker();
 	private ANTLRErrorStrategy errorStrategy = new DefaultErrorStrategy();
 	JScrollPane OutputscrollPane;
 	/**
@@ -184,10 +186,15 @@ public class NymTaxUI {
 				}
 				NymtaxParser parser = new NymtaxParser(tokens);
 				parser.addErrorListener(listener);
-//
-
 				parser.setErrorHandler(errorStrategy);
+
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
+
+				parser.reset();
+
+				ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
+
+
 
                 consoleList.setModel(tokenListModel);
                 OutputscrollPane.setViewportView(consoleList);
