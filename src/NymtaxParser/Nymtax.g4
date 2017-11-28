@@ -136,7 +136,7 @@ list_var		: data_type LBRACK RBRACK
 
 // CONSTANT DECLARATION //
 list_constants      : (const_declaration SEMI )+;
-const_declaration 	: list_var IDENTIFIER ASSIGN constant ;
+const_declaration 	: list_var IDENTIFIER ASSIGN constant #declaration_constant;
 constant			: INTEGER
                         | FLOAT
                         | CHAR | STRING;
@@ -179,13 +179,11 @@ string_expression	: ADD string_expression
                     | IDENTIFIER
                     | STRING;
 
-numerical_expression :  LPAREN numerical_expression RPAREN |
-                        NFACTOR ADD numerical_expression |
-                        NFACTOR SUB numerical_expression |
-                        NFACTOR MUL numerical_expression |
-                        NFACTOR DIV numerical_expression |
-                        NFACTOR MOD numerical_expression |
-                        NFACTOR;
+numerical_expression: numerical_expression op=(MUL|DIV|MOD) numerical_expression # numerical_MDM
+                    | numerical_expression op=(ADD|SUB) numerical_expression     # numerical_AS
+                    | NFACTOR                                                    # numerical_val
+                    | '('numerical_expression')'                                 # numerical_paren
+                    | SUB '('numerical_expression')'                             # numerical_negparen ;
 
 boolean_expression	: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) numerical_expression     #boolean_numerical
                     | string_expression op=(EQUAL|NOTEQUAL) string_expression                                   #boolean_string
@@ -215,19 +213,20 @@ input_data_type : MOD data_type;
 input_IDENTIFIER	: AT_SIGN IDENTIFIER;
 
 // CONDITIONAL STATEMENTS //
-when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE (otherwise_when_statement+)? (OTHERWISE LPAREN list_statement? RPAREN)?;
-otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE ;
+when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE (otherwise_when_statement+)?
+                  (OTHERWISE LPAREN list_statement? RPAREN)?      #conditional_if ;
+otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE   #conditional_ifelse;
 
-condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE ;
+condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch;
 
-list_event	: (EVENT expression COLON (list_statement)?)+;
+list_event	: (EVENT expression COLON (list_statement)?)+ #conditional_switche;
 
-base_statement : BASE COLON list_statement?;
+base_statement : BASE COLON list_statement? #condtional_base;
 
 // LOOP STATEMENTS //
-loop_every_statement : EVERY LPAREN assign COMMA boolean_expression COMMA assign RPAREN LBRACE list_statement? RBRACE ;
-loop_throughout_statement : THROUGHOUT LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE;
-loop_do_throughout_statement : DO LBRACE list_statement? RBRACE THROUGHOUT LPAREN boolean_expression RPAREN ;
+loop_every_statement : EVERY LPAREN assign COMMA boolean_expression COMMA assign RPAREN LBRACE list_statement? RBRACE  #loop_for;
+loop_throughout_statement : THROUGHOUT LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE #loop_while;
+loop_do_throughout_statement : DO LBRACE list_statement? RBRACE THROUGHOUT LPAREN boolean_expression RPAREN #loop_dowhile ;
 
 // FUNCTIONS //
 list_func_declaration	: func_declaration+;
