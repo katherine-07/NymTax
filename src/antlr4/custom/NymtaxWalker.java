@@ -101,20 +101,44 @@ public class NymtaxWalker extends NymtaxBaseListener {
                 }
             }else if(currentFunc.isDeclared(t.getText())){
                 Symbol s = currentFunc.lookup(t.getText());
-                System.out.print(s.getValue().toString());
+                System.out.print(s.getValue());
             }else{
                 //TODO: Error - variable not found exception
             }
         }
 
-
+        System.out.println();
     }
 
     @Override public void enterRead_statement(NymtaxParser.Read_statementContext ctx) { }
 
     @Override public void exitRead_statement(NymtaxParser.Read_statementContext ctx) { }
 
-    @Override public void enterWhen_statement(NymtaxParser.When_statementContext ctx) { }
+    @Override public void enterWhen_statement(NymtaxParser.When_statementContext ctx) {
+        // WHEN( blah == blah )
+        if(ctx.boolean_expression().children.get(0) instanceof NymtaxParser.Numerical_expressionContext){
+
+        }
+
+        List<ParseTree> tree = ctx.boolean_expression().children;
+
+        if(tree.get(0) instanceof NymtaxParser.Numerical_expressionContext){
+                NymtaxParser.Numerical_expressionContext Num1 = (NymtaxParser.Numerical_expressionContext) tree.get(0);
+                NymtaxParser.Relation_opsContext relation = (NymtaxParser.Relation_opsContext) tree.get(1);
+                NymtaxParser.Numerical_expressionContext Num2 = (NymtaxParser.Numerical_expressionContext) tree.get(2);
+
+                if(relation.EQUAL() != null){
+
+                }else if (relation.NOTEQUAL() != null){
+
+                } else if (relation.GE() != null){
+
+                }
+        }
+
+
+
+    }
 
     @Override public void exitWhen_statement(NymtaxParser.When_statementContext ctx) { }
 
