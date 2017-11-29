@@ -3,7 +3,7 @@ package compiler.objects;
 //  class to store variables and functions
 public class Symbol {
     protected String identifier;
-    protected int dataType;
+    protected String dataType;
     protected boolean isField;
     protected boolean isInitialized;
 
@@ -17,7 +17,7 @@ public class Symbol {
 
     protected Object value;
 
-    public Symbol(String id, int type, boolean isField){
+    public Symbol(String id, String type, boolean isField){
         identifier = id;
         dataType = type;
         this.isField = isField;
@@ -33,7 +33,7 @@ public class Symbol {
         return identifier;
     }
 
-    public int getDataType() {
+    public String getDataType() {
         return dataType;
     }
 

@@ -7,6 +7,14 @@ import compiler.objects.Symbol;
 
 public class BooleanExpression extends NymtaxBaseVisitor {
 
+    public Scope getScope_() {
+        return scope_;
+    }
+
+    public void setScope_(Scope scope_) {
+        this.scope_ = scope_;
+    }
+
     private Scope scope_;
 
     public BooleanExpression(Scope scope){
@@ -128,11 +136,11 @@ public class BooleanExpression extends NymtaxBaseVisitor {
             //TODO: throw error variable not found error
             return null;
         } else{
-            int dataType = variable.getDataType();
+            String dataType = variable.getDataType();
             switch(dataType){
-                case NymtaxParser.INT:
+                case "INTEGER":
                     //Fallthrough
-                case NymtaxParser.FLO:
+                case "FLOAT":
                     return (Float)variable.getValue() != 0 ;
                 default:
                     //TODO: throw error data mismatch error

@@ -128,9 +128,9 @@ data_type : INT | FLO | CHR | STRNG;
 
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)?
-                    | const_declaration
-                    | array_initialization;
+var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)?         #var_dec_var
+                    | const_declaration                             #var_dec_const
+                    | array_initialization                          #var_array_init;
 
 list_var		: data_type LBRACK RBRACK
                     | data_type MUL
@@ -151,22 +151,22 @@ array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_t
 // STATEMENT //
 list_statement	: LBRACE list_statement RBRACE
                     | ( statement SEMI )+;
-statement		: var_declaration
-                    | assign
-                    | function_call_stat
-                    | when_statement
-                    | condition_statement
-                    | loop_every_statement
-				    | loop_throughout_statement
-				    | loop_do_throughout_statement
-				    | send_statement
-				    | write_statement
-				    | read_statement
-				    | STOP
-				    | PROCEED ;
+statement		: var_declaration                       #statement_var_dec
+                    | assign                            #statement_assign
+                    | function_call_stat                #statement_func_call
+                    | when_statement                    #statement_when
+                    | condition_statement               #statement_condition
+                    | loop_every_statement              #statement_loop_every
+				    | loop_throughout_statement         #statement_loop_throughout
+				    | loop_do_throughout_statement      #statement_loop_doThroughout
+				    | send_statement                    #statement_send
+				    | write_statement                   #statement_write
+				    | read_statement                    #statement_read
+				    | STOP                              #statement_stop
+				    | PROCEED                           #statement_proceed;
 
 function_call_stat	:   IDENTIFIER LPAREN list_parameter? RPAREN;
-list_parameter		:   IDENTIFIER ((COMMA IDENTIFIER)+)?;
+list_parameter		:   list_var IDENTIFIER ((COMMA list_var IDENTIFIER)+)?;
 
 
 send_statement		: SEND expression;
@@ -207,8 +207,9 @@ bool_term			: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) n
                     | TRUE                                                                      #boolean_true
                     | FALSE                                                                     #boolean_false;
 // ASSIGNMENT STATEMENTS //
-assign			: IDENTIFIER ASSIGN IDENTIFIER |
-				  IDENTIFIER ASSIGN constant;
+assign			: IDENTIFIER ASSIGN IDENTIFIER              #assign_variable
+                | IDENTIFIER ASSIGN constant                #assign_constant
+                | IDENTIFIER ASSIGN function_call_stat      #assign_function;
 
 // INPUT OUTPUT //
 write_statement	: WRITE LPAREN write_list RPAREN ;
@@ -238,8 +239,8 @@ loop_do_throughout_statement : DO LBRACE list_statement? RBRACE THROUGHOUT LPARE
 
 // FUNCTIONS //
 list_func_declaration	: func_declaration+;
-func_declaration		: func_with_send
-                            | func_without_send;
+func_declaration		: func_with_send            #func_dec_send
+                            | func_without_send     #func_dec_none;
 func_with_send			: data_type function_call_stat func_body;
 func_without_send		: VOID function_call_stat func_body;
 func_body				: LBRACE list_statement? RBRACE;

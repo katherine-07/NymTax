@@ -2,21 +2,27 @@ package compiler.objects;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Function extends Symbol implements Scope {
 
+    private List<String> parameterIds;
     private HashMap<String, Symbol> symbols;
+    private HashMap<String, Function> functions;
     private Scope parent;
     private ParserRuleContext ctx;
+    private Symbol sendSymbol;
+    private String sendType;
 
-    public Function(String id, Scope parent, ParserRuleContext ctx){
+    public Function(String id, Scope parent, ParserRuleContext ctx, String sendType){
         super(id, Scope.TYPE_FUNCTION, true);
-        symbols = new HashMap<String, Symbol>();
+        symbols = new HashMap<>();
+        functions = new HashMap<>();
+        parameterIds = new ArrayList<>();
+
         this.parent = parent;
         this.ctx = ctx;
+        this.sendType = sendType;
     }
 
     public Symbol getSendSymbol() {
@@ -27,13 +33,28 @@ public class Function extends Symbol implements Scope {
         this.sendSymbol = sendSymbol;
     }
 
-    private Symbol sendSymbol;
 
 
     public ParserRuleContext getContex() {
         return ctx;
     }
 
+    public void addParameter(String id, String dataType){
+        parameterIds.add(id);
+        Symbol param = new Symbol(id, dataType, false);
+        declare(param);
+    }
+
+    public void initializeParameter(List<Object> params){
+        if(parameterIds.size() == params.size()){
+            for(int i=0; i<parameterIds.size(); i++){
+                this.lookup(parameterIds.get(i)).setValue(params.get(i));
+            }
+        }else{
+            //TODO: throw parameter mismatch exception
+        }
+
+    }
 
     public String getIdentifier(){
         return identifier;
@@ -46,6 +67,14 @@ public class Function extends Symbol implements Scope {
     public void declare(Symbol symbol){
         if(!symbols.containsKey(symbol.getIdentifier())){
             symbols.put(symbol.getIdentifier(), symbol);
+        }else{
+            //TODO: ERROR throw variable already declared exception
+        }
+    }
+
+    public void declare(Function function){
+        if(!functions.containsKey(function.getIdentifier())){
+            functions.put(function.getIdentifier(), function);
         }else{
             //TODO: ERROR throw variable already declared exception
         }
@@ -72,6 +101,25 @@ public class Function extends Symbol implements Scope {
     public Symbol localLookup(String id){
         if(symbols.containsKey(id)){
             return symbols.get(id);
+        }else{
+            return null;
+        }
+    }
+
+
+    public Symbol lookupFunc(String id){
+        if(functions.containsKey(id)){
+            return functions.get(id);
+        }else if(parent != null){
+            return parent.lookup(id);
+        }else{
+            return null;
+        }
+    }
+
+    public Function localLookupFunc(String id){
+        if(functions.containsKey(id)){
+            return functions.get(id);
         }else{
             return null;
         }

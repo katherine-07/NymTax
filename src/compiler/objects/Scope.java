@@ -5,9 +5,9 @@ import java.util.Set;
 
 public interface Scope{
 
-    public static final int
-        TYPE_FUNCTION   = -1,
-        TYPE_MAIN       = -2;
+    public static final String
+        TYPE_FUNCTION   = "FUNCTION",
+        TYPE_MAIN       = "RUN MAIN";
 
 
     String getIdentifier();
