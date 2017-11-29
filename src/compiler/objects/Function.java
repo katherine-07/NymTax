@@ -9,12 +9,12 @@ public class Function extends Symbol implements Scope {
     private List<String> parameterIds;
     private HashMap<String, Symbol> symbols;
     private HashMap<String, Function> functions;
-    private Scope parent;
+    private Function parent;
     private ParserRuleContext ctx;
     private Symbol sendSymbol;
     private String sendType;
 
-    public Function(String id, Scope parent, ParserRuleContext ctx, String sendType){
+    public Function(String id, Function parent, ParserRuleContext ctx, String sendType){
         super(id, Scope.TYPE_FUNCTION, true);
         symbols = new HashMap<>();
         functions = new HashMap<>();
@@ -60,7 +60,7 @@ public class Function extends Symbol implements Scope {
         return identifier;
     }
 
-    public Scope getParentScope(){
+    public Function getParentScope(){
         return parent;
     }
 
@@ -69,6 +69,7 @@ public class Function extends Symbol implements Scope {
             symbols.put(symbol.getIdentifier(), symbol);
         }else{
             //TODO: ERROR throw variable already declared exception
+            System.out.print("ERROR VARIABLE ALRDY DEC");
         }
     }
 
@@ -77,11 +78,14 @@ public class Function extends Symbol implements Scope {
             functions.put(function.getIdentifier(), function);
         }else{
             //TODO: ERROR throw variable already declared exception
+            System.out.print("ERROR VARIABLE ALRDY DEC");
         }
     }
 
-    public void initialize(Symbol symbol, Object value){
-        if(symbols.containsKey(symbol.getIdentifier())){
+    public void initialize(String id, Object value){
+
+        if(symbols.containsKey(id)){
+            Symbol symbol = lookup(id);
             symbols.get(symbol.getIdentifier()).setValue(value);
         }else{
             //TODO: ERROR throw variable not found exception

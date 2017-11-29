@@ -16,7 +16,7 @@ public interface Scope{
 
     void declare(Symbol symbol);
 
-    void initialize(Symbol symbol, Object value);
+    void initialize(String id, Object value);
 
     Symbol lookup(String id);
 

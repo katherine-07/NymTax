@@ -1,5 +1,7 @@
-package antlr4.custom;
+package compiler.execution;
 
+import antlr4.custom.ThrowingErrorListener;
+import compiler.objects.Function;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -22,6 +24,16 @@ public class NumericalExpression extends NymtaxBaseVisitor{
     private CommonTokenStream tokens;
     private NymtaxParser parser;
     private ParseTree tree;
+
+    public Function getScope_() {
+        return scope_;
+    }
+
+    public void setScope_(Function scope_) {
+        this.scope_ = scope_;
+    }
+
+    private Function scope_;
 
     public Float solve(String expression) throws ParseCancellationException {
 
@@ -50,7 +62,7 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Object visitNumerical_paren(NymtaxParser.Numerical_parenContext ctx) {
-        return super.visit(ctx.numerical_expression());
+        return visit(ctx.numerical_expression());
     }
 
     @Override
@@ -95,7 +107,7 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Object visitNumerical_negparen(NymtaxParser.Numerical_negparenContext ctx) {
-        return  -1 * ( (Float) super.visit(ctx.numerical_expression()));
+        return  -1 * ( (Float) visit(ctx.numerical_expression()));
     }
 
     @Override

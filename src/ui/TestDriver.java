@@ -3,6 +3,7 @@ package ui;
 import antlr4.generate.NymtaxLexer;
 import antlr4.generate.NymtaxParser;
 import compiler.execution.BooleanExpression;
+import compiler.execution.ExecutionManager;
 import compiler.objects.Function;
 import compiler.objects.Scope;
 import org.antlr.v4.runtime.CharStreams;
@@ -14,8 +15,8 @@ public class TestDriver {
 
     public static void main(String args[]){
         Scanner s = new Scanner(System.in);
-        Function scope = new Function("main", null,null);
-        BooleanExpression bool = new BooleanExpression(scope);
+        Function scope = new Function("main", null,null, null);
+        ExecutionManager a = ExecutionManager.getInstance();
 
         while(true){
             System.out.print("enter expression");
@@ -25,8 +26,7 @@ public class TestDriver {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
             NymtaxParser parser = new NymtaxParser(tokens);
 
-
-            Boolean a = (Boolean)bool.visit(parser.boolean_expression());
+            a.visit(parser.program());
 
             System.out.println(a);
         }

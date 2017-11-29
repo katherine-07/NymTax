@@ -2,50 +2,16 @@ package antlr4.custom;
 
 import antlr4.generate.NymtaxListener;
 import antlr4.generate.NymtaxParser;
+import antlr4.generate.NymtaxParser.*;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.log4j.Logger;
 
-import antlr4.generate.NymtaxParser.AssignContext;
-import antlr4.generate.NymtaxParser.Base_statementContext;
-import antlr4.generate.NymtaxParser.Condition_statementContext;
-import antlr4.generate.NymtaxParser.Const_declarationContext;
-import antlr4.generate.NymtaxParser.ConstantContext;
-import antlr4.generate.NymtaxParser.ExpressionContext;
-import antlr4.generate.NymtaxParser.Func_bodyContext;
-import antlr4.generate.NymtaxParser.Func_declarationContext;
-import antlr4.generate.NymtaxParser.Func_mainContext;
-import antlr4.generate.NymtaxParser.Func_with_sendContext;
-import antlr4.generate.NymtaxParser.Func_without_sendContext;
-import antlr4.generate.NymtaxParser.Function_call_statContext;
-import antlr4.generate.NymtaxParser.Input_IDENTIFIERContext;
-import antlr4.generate.NymtaxParser.Input_data_typeContext;
-import antlr4.generate.NymtaxParser.List_constantsContext;
-import antlr4.generate.NymtaxParser.List_eventContext;
-import antlr4.generate.NymtaxParser.List_func_declarationContext;
-import antlr4.generate.NymtaxParser.List_parameterContext;
-import antlr4.generate.NymtaxParser.List_statementContext;
-import antlr4.generate.NymtaxParser.List_varContext;
-import antlr4.generate.NymtaxParser.Loop_do_throughout_statementContext;
-import antlr4.generate.NymtaxParser.Loop_every_statementContext;
-import antlr4.generate.NymtaxParser.Loop_throughout_statementContext;
-import antlr4.generate.NymtaxParser.Numerical_expressionContext;
-import antlr4.generate.NymtaxParser.Otherwise_when_statementContext;
-import antlr4.generate.NymtaxParser.ProgramContext;
-import antlr4.generate.NymtaxParser.Read_statementContext;
-import antlr4.generate.NymtaxParser.Send_statementContext;
-import antlr4.generate.NymtaxParser.StatementContext;
-import antlr4.generate.NymtaxParser.String_expressionContext;
-import antlr4.generate.NymtaxParser.Var_declarationContext;
-import antlr4.generate.NymtaxParser.When_statementContext;
-import antlr4.generate.NymtaxParser.Write_listContext;
-import antlr4.generate.NymtaxParser.Write_statementContext;
-
 
 public class DetectionNymtaxWalker implements NymtaxListener{
 
-	
+
 	final static Logger logger = Logger.getLogger(DetectionNymtaxWalker.class);
 	
 	int output = 0;
@@ -116,24 +82,37 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
 	}
 
-	@Override
-	public void enterVar_declaration(Var_declarationContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0) {
-			logger.info("[INFO] VARIABLE DECLARATION");
-			logger.info("[INFO] Variable declaration found: " + ctx.getText());
-		}
-	}
+    @Override
+    public void enterVar_dec_var(NymtaxParser.Var_dec_varContext ctx) {
 
-	@Override
-	public void exitVar_declaration(Var_declarationContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] END VARIABLE DECLARATION");
-		
-	}
+    }
 
-	@Override
+    @Override
+    public void exitVar_dec_var(NymtaxParser.Var_dec_varContext ctx) {
+
+    }
+
+    @Override
+    public void enterVar_dec_const(NymtaxParser.Var_dec_constContext ctx) {
+
+    }
+
+    @Override
+    public void exitVar_dec_const(NymtaxParser.Var_dec_constContext ctx) {
+
+    }
+
+    @Override
+    public void enterVar_array_init(NymtaxParser.Var_array_initContext ctx) {
+
+    }
+
+    @Override
+    public void exitVar_array_init(NymtaxParser.Var_array_initContext ctx) {
+
+    }
+
+    @Override
 	public void enterList_var(List_varContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0) {
@@ -179,17 +158,17 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 //			logger.info("[INFO] Exiting constant.");
 	}
 
-	@Override
-	public void enterArray_initialization(NymtaxParser.Array_initializationContext ctx) {
+    @Override
+    public void enterArray_initialization(NymtaxParser.Array_initializationContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitArray_initialization(NymtaxParser.Array_initializationContext ctx) {
+    @Override
+    public void exitArray_initialization(NymtaxParser.Array_initializationContext ctx) {
 
-	}
+    }
 
-	@Override
+    @Override
 	public void enterList_statement(List_statementContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0)
@@ -203,21 +182,137 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] END OF STATEMENTS");
 	}
 
-	@Override
-	public void enterStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] START STATEMENT");
-	}
+    @Override
+    public void enterStatement_var_dec(NymtaxParser.Statement_var_decContext ctx) {
 
-	@Override
-	public void exitStatement(StatementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] END STATEMENT");
-	}
+    }
 
-	@Override
+    @Override
+    public void exitStatement_var_dec(NymtaxParser.Statement_var_decContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_assign(NymtaxParser.Statement_assignContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_assign(NymtaxParser.Statement_assignContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_func_call(NymtaxParser.Statement_func_callContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_func_call(NymtaxParser.Statement_func_callContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_when(NymtaxParser.Statement_whenContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_when(NymtaxParser.Statement_whenContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_condition(NymtaxParser.Statement_conditionContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_condition(NymtaxParser.Statement_conditionContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_loop_every(NymtaxParser.Statement_loop_everyContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_loop_every(NymtaxParser.Statement_loop_everyContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_loop_throughout(NymtaxParser.Statement_loop_throughoutContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_loop_throughout(NymtaxParser.Statement_loop_throughoutContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_loop_doThroughout(NymtaxParser.Statement_loop_doThroughoutContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_loop_doThroughout(NymtaxParser.Statement_loop_doThroughoutContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_send(NymtaxParser.Statement_sendContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_send(NymtaxParser.Statement_sendContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_write(NymtaxParser.Statement_writeContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_write(NymtaxParser.Statement_writeContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_read(NymtaxParser.Statement_readContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_read(NymtaxParser.Statement_readContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_stop(NymtaxParser.Statement_stopContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_stop(NymtaxParser.Statement_stopContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_proceed(NymtaxParser.Statement_proceedContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_proceed(NymtaxParser.Statement_proceedContext ctx) {
+
+    }
+
+    @Override
 	public void enterFunction_call_stat(Function_call_statContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0) {
@@ -261,19 +356,45 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 //			logger.info("[INFO] Exiting send statement.");
 	}
 
-	@Override
-	public void enterExpression(ExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] EXPRESSION LIST");
-	}
+    @Override
+    public void enterVisit_stringexpr(Visit_stringexprContext ctx) {
 
-	@Override
-	public void exitExpression(ExpressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] END OF EXPRESSIONS");
-	}
+    }
+
+    @Override
+    public void exitVisit_stringexpr(Visit_stringexprContext ctx) {
+
+    }
+
+    @Override
+    public void enterVisit_numexpr(Visit_numexprContext ctx) {
+
+    }
+
+    @Override
+    public void exitVisit_numexpr(Visit_numexprContext ctx) {
+
+    }
+
+    @Override
+    public void enterVisit_boolexpr(Visit_boolexprContext ctx) {
+
+    }
+
+    @Override
+    public void exitVisit_boolexpr(Visit_boolexprContext ctx) {
+
+    }
+
+    @Override
+    public void enterVisit_func_call(Visit_func_callContext ctx) {
+
+    }
+
+    @Override
+    public void exitVisit_func_call(Visit_func_callContext ctx) {
+
+    }
 
 	@Override
 	public void enterString_expression(String_expressionContext ctx) {
@@ -289,154 +410,217 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] Last of string expressions.");
 	}
 
-	@Override
-	public void enterNumerical_expression(Numerical_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Numerical expression found: " + ctx.getText());
-	}
+    @Override
+    public void enterNumerical_val(NymtaxParser.Numerical_valContext ctx) {
 
-	@Override
-	public void exitNumerical_expression(Numerical_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of numerical expressions.");
-	}
+    }
 
-	@Override
-	public void enterBoolean_and(NymtaxParser.Boolean_andContext ctx) {
+    @Override
+    public void exitNumerical_val(NymtaxParser.Numerical_valContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_and(NymtaxParser.Boolean_andContext ctx) {
+    @Override
+    public void enterNumerical_AS(NymtaxParser.Numerical_ASContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_log(NymtaxParser.Boolean_logContext ctx) {
+    @Override
+    public void exitNumerical_AS(NymtaxParser.Numerical_ASContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_log(NymtaxParser.Boolean_logContext ctx) {
+    @Override
+    public void enterNumerical_MDM(NymtaxParser.Numerical_MDMContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_or(NymtaxParser.Boolean_orContext ctx) {
+    @Override
+    public void exitNumerical_MDM(NymtaxParser.Numerical_MDMContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_or(NymtaxParser.Boolean_orContext ctx) {
+    @Override
+    public void enterNumerical_paren(NymtaxParser.Numerical_parenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
+    @Override
+    public void exitNumerical_paren(NymtaxParser.Numerical_parenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
+    @Override
+    public void enterNumerical_negparen(NymtaxParser.Numerical_negparenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_not(NymtaxParser.Boolean_notContext ctx) {
+    @Override
+    public void exitNumerical_negparen(NymtaxParser.Numerical_negparenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_not(NymtaxParser.Boolean_notContext ctx) {
+    @Override
+    public void enterBoolean_and(NymtaxParser.Boolean_andContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_term(NymtaxParser.Boolean_termContext ctx) {
+    @Override
+    public void exitBoolean_and(NymtaxParser.Boolean_andContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_term(NymtaxParser.Boolean_termContext ctx) {
+    @Override
+    public void enterBoolean_log(NymtaxParser.Boolean_logContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
+    @Override
+    public void exitBoolean_log(NymtaxParser.Boolean_logContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
+    @Override
+    public void enterBoolean_or(NymtaxParser.Boolean_orContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
+    @Override
+    public void exitBoolean_or(NymtaxParser.Boolean_orContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
+    @Override
+    public void enterBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+    @Override
+    public void exitBoolean_paren(NymtaxParser.Boolean_parenContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+    @Override
+    public void enterBoolean_not(NymtaxParser.Boolean_notContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+    @Override
+    public void exitBoolean_not(NymtaxParser.Boolean_notContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+    @Override
+    public void enterBoolean_term(NymtaxParser.Boolean_termContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+    @Override
+    public void exitBoolean_term(NymtaxParser.Boolean_termContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+    @Override
+    public void enterBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void enterBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+    @Override
+    public void exitBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
 
-	}
+    }
 
-	@Override
-	public void exitBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+    @Override
+    public void enterBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
 
-	}
-	@Override
-	public void enterAssign(AssignContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Assignment call found: " +ctx.getText());
-	}	
+    }
 
-	@Override
-	public void exitAssign(AssignContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of assignment calls.");
-	}
+    @Override
+    public void exitBoolean_equality(NymtaxParser.Boolean_equalityContext ctx) {
 
-	@Override
+    }
+
+    @Override
+    public void enterBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_false(NymtaxParser.Boolean_falseContext ctx) {
+
+    }
+
+    @Override
+    public void enterBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
+
+    }
+
+    @Override
+    public void enterBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_true(NymtaxParser.Boolean_trueContext ctx) {
+
+    }
+
+    @Override
+    public void enterBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
+
+    }
+
+    @Override
+    public void enterAssign_variable(NymtaxParser.Assign_variableContext ctx) {
+
+    }
+
+    @Override
+    public void exitAssign_variable(NymtaxParser.Assign_variableContext ctx) {
+
+    }
+
+    @Override
+    public void enterAssign_constant(NymtaxParser.Assign_constantContext ctx) {
+
+    }
+
+    @Override
+    public void exitAssign_constant(NymtaxParser.Assign_constantContext ctx) {
+
+    }
+
+    @Override
+    public void enterAssign_expression(Assign_expressionContext ctx) {
+
+    }
+
+    @Override
+    public void exitAssign_expression(Assign_expressionContext ctx) {
+
+    }
+
+    @Override
+    public void enterAssign_function(NymtaxParser.Assign_functionContext ctx) {
+
+    }
+
+    @Override
+    public void exitAssign_function(NymtaxParser.Assign_functionContext ctx) {
+
+    }
+
+    @Override
 	public void enterWrite_statement(Write_statementContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0)
@@ -506,24 +690,37 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	//		logger.info("[INFO] ");
 	}
 
-	@Override
-	public void enterWhen_statement(When_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0) {
-			logger.info("[INFO] WHEN statement found: " +ctx.getText());
-			logger.info("[INFO] Entering WHEN statement.");
-		}
-	}
+    @Override
+    public void enterConditional_if(NymtaxParser.Conditional_ifContext ctx) {
 
-	@Override
-	public void exitWhen_statement(When_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting WHEN statement.");
-	}
+    }
 
-	@Override
-	public void enterOtherwise_when_statement(Otherwise_when_statementContext ctx) {
+    @Override
+    public void exitConditional_if(NymtaxParser.Conditional_ifContext ctx) {
+
+    }
+
+    @Override
+    public void enterConditional_ifelse(NymtaxParser.Conditional_ifelseContext ctx) {
+
+    }
+
+    @Override
+    public void exitConditional_ifelse(NymtaxParser.Conditional_ifelseContext ctx) {
+
+    }
+
+    @Override
+    public void enterConditional_ifelseif(NymtaxParser.Conditional_ifelseifContext ctx) {
+
+    }
+
+    @Override
+    public void exitConditional_ifelseif(NymtaxParser.Conditional_ifelseifContext ctx) {
+
+    }
+
+    public void enterOtherwise_when_statement(Otherwise_when_statementContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0) {
 			logger.info("[INFO] OTHERWISE-WHEN statement found: " +ctx.getText());
@@ -538,99 +735,67 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] Exiting OTHERWISE-WHEN statement.");
 	}
 
-	@Override
-	public void enterCondition_statement(Condition_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] CONDITION statement found: " +ctx.getText());
-	}
+    @Override
+    public void enterConditional_switch(NymtaxParser.Conditional_switchContext ctx) {
 
-	@Override
-	public void exitCondition_statement(Condition_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] End of CONDITION statement.");
-	}
+    }
 
-	@Override
-	public void enterList_event(List_eventContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0) {
-			logger.info("[INFO] Event list statement found: " +ctx.getText());
-			logger.info("[INFO] Entering event list.");
-		}
-	}
+    @Override
+    public void exitConditional_switch(NymtaxParser.Conditional_switchContext ctx) {
 
-	@Override
-	public void exitList_event(List_eventContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] End of event list.");
-	}
+    }
 
-	@Override
-	public void enterBase_statement(Base_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] BASE statement found:" +ctx.getText());
-	}
+    @Override
+    public void enterConditional_switche(NymtaxParser.Conditional_switcheContext ctx) {
 
-	@Override
-	public void exitBase_statement(Base_statementContext ctx) {
-		// TODO Auto-generated method stub
-	//	if(output == 0)
-	//		logger.info("[INFO] Exiting base statement.");
-	}
+    }
 
-	@Override
-	public void enterLoop_every_statement(Loop_every_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0){
-			logger.info("[INFO] LOOP-EVERY statement found: " +ctx.getText());
-			logger.info("[INFO] Entering LOOP-EVERY statement.");
-		}
-	}
+    @Override
+    public void exitConditional_switche(NymtaxParser.Conditional_switcheContext ctx) {
 
-	@Override
-	public void exitLoop_every_statement(Loop_every_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting LOOP-EVERY statement.");
-	}
+    }
 
-	@Override
-	public void enterLoop_throughout_statement(Loop_throughout_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0) {
-			logger.info("[INFO] LOOP-THROUGHOUT statement found: " +ctx.getText());
-			logger.info("[INFO] Entering LOOP-THROUGHOUT statement.");
-		}
-	}
+    @Override
+    public void enterCondtional_base(NymtaxParser.Condtional_baseContext ctx) {
 
-	@Override
-	public void exitLoop_throughout_statement(Loop_throughout_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting LOOP-THROUGHOUT statement.");
-	}
+    }
 
-	@Override
-	public void enterLoop_do_throughout_statement(Loop_do_throughout_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0) {
-			logger.info("[INFO] LOOP-DO-THROUGHOUT statement found: " +ctx.getText());
-			logger.info("[INFO] Entering LOOP-DO-THROUGHOUT statement.");
-		}
-	}
+    @Override
+    public void exitCondtional_base(NymtaxParser.Condtional_baseContext ctx) {
 
-	@Override
-	public void exitLoop_do_throughout_statement(Loop_do_throughout_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting LOOP-DO-THROUGHOUT statement.");
-	}
+    }
 
-	@Override
+    @Override
+    public void enterLoop_for(NymtaxParser.Loop_forContext ctx) {
+
+    }
+
+    @Override
+    public void exitLoop_for(NymtaxParser.Loop_forContext ctx) {
+
+    }
+
+    @Override
+    public void enterLoop_while(NymtaxParser.Loop_whileContext ctx) {
+
+    }
+
+    @Override
+    public void exitLoop_while(NymtaxParser.Loop_whileContext ctx) {
+
+    }
+
+    @Override
+    public void enterLoop_dowhile(NymtaxParser.Loop_dowhileContext ctx) {
+
+    }
+
+    @Override
+    public void exitLoop_dowhile(NymtaxParser.Loop_dowhileContext ctx) {
+
+    }
+
+    @Override
 	public void enterList_func_declaration(List_func_declarationContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0)
@@ -644,21 +809,27 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] END OF FUNCTION DECLARATION LIST ");
 	}
 
-	@Override
-	public void enterFunc_declaration(Func_declarationContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Declaration function found: " +ctx.getText());
-	}
+    @Override
+    public void enterFunc_dec_send(NymtaxParser.Func_dec_sendContext ctx) {
 
-	@Override
-	public void exitFunc_declaration(Func_declarationContext ctx) {
-		// TODO Auto-generated method stub
-	//	if(output == 0)
-	//		logger.info("[INFO] Exiting declaration function.");
-	}
+    }
 
-	@Override
+    @Override
+    public void exitFunc_dec_send(NymtaxParser.Func_dec_sendContext ctx) {
+
+    }
+
+    @Override
+    public void enterFunc_dec_none(NymtaxParser.Func_dec_noneContext ctx) {
+
+    }
+
+    @Override
+    public void exitFunc_dec_none(NymtaxParser.Func_dec_noneContext ctx) {
+
+    }
+
+    @Override
 	public void enterFunc_with_send(Func_with_sendContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0) {

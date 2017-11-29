@@ -36,23 +36,23 @@ STRNG   : 'STRING';
 // STRING SEQUENCES --------
 
 STRING
-    :   QUOTE StringCharacters? QUOTE
+    :   QUOTE (LETTER_NUMBER+)? QUOTE
     ;
-
-fragment
-StringCharacters
-    :   StringCharacter+
-    ;
-
-fragment
-StringCharacter
-    :   ~["\\]
-    |   EscapeSequence
-    ;
-
-fragment
-EscapeSequence
-    :   '\\' [btnfr"'\\] ;
+//
+//fragment
+//StringCharacters
+//    :   StringCharacter+
+//    ;
+//
+//fragment
+//StringCharacter
+//    :   ~["\\]
+//    |   EscapeSequence
+//    ;
+//
+//fragment
+//EscapeSequence
+//    :   '\\' [btnfr"'\\] ;
 
 // STRING SEQUENCES -------------
 
@@ -124,6 +124,8 @@ URSHIFT_ASSIGN  : '>>>=';
 
 NEW       : 'NEW';
 
+IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
+
 data_type : INT | FLO | CHR | STRNG;
 
 // VARIABLE DECLARATION //
@@ -139,7 +141,7 @@ list_var		: data_type LBRACK RBRACK
 
 // CONSTANT DECLARATION //
 list_constants      : (const_declaration SEMI )+;
-const_declaration 	: list_var IDENTIFIER ASSIGN constant #declaration_constant;
+const_declaration 	: list_var IDENTIFIER ASSIGN constant;
 constant			: INTEGER
                         | FLOAT
                         | CHAR | STRING;
@@ -171,10 +173,10 @@ list_parameter		:   list_var IDENTIFIER ((COMMA list_var IDENTIFIER)+)?;
 
 send_statement		: SEND expression;
 
-expression			: string_expression
-                    | numerical_expression
-                    | boolean_expression
-                    | func_with_send LPAREN list_parameter RPAREN;
+expression			: string_expression                             #visit_stringexpr
+                    | numerical_expression                          #visit_numexpr
+                    | boolean_expression                            #visit_boolexpr
+                    | func_with_send LPAREN list_parameter RPAREN   #visit_func_call;
 
 string_expression	: ADD string_expression
                     | NOT string_expression
@@ -207,6 +209,7 @@ bool_term			: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) n
 // ASSIGNMENT STATEMENTS //
 assign			: IDENTIFIER ASSIGN IDENTIFIER              #assign_variable
                 | IDENTIFIER ASSIGN constant                #assign_constant
+                | IDENTIFIER ASSIGN expression              #assign_expression
                 | IDENTIFIER ASSIGN function_call_stat      #assign_function;
 
 // INPUT OUTPUT //
@@ -221,9 +224,10 @@ input_data_type : MOD data_type;
 input_IDENTIFIER	: AT_SIGN IDENTIFIER;
 
 // CONDITIONAL STATEMENTS //
-when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE (otherwise_when_statement+)?
-                  (OTHERWISE LPAREN list_statement? RPAREN)?      #conditional_if ;
-otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE   #conditional_ifelse;
+when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE                                           #conditional_if
+                |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE OTHERWISE LBRACE list_statement? RBRACE  #conditional_ifelse
+                |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE (otherwise_when_statement+)              #conditional_ifelseif;
+otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE   ;
 
 condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch;
 
@@ -254,7 +258,6 @@ NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER ;												//removed
 
  // ** declarations ** //
 
-IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
 INTEGER			: SIGN NUMBER;
 SIGN			: ADD | SUB;
 FLOAT			: NUMBER DOT NUMBER;

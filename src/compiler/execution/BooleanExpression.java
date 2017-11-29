@@ -2,6 +2,8 @@ package compiler.execution;
 
 import antlr4.generate.NymtaxBaseVisitor;
 import antlr4.generate.NymtaxParser;
+import compiler.exceptions.DataMismatchException;
+import compiler.exceptions.VariableNotFoundException;
 import compiler.objects.Scope;
 import compiler.objects.Symbol;
 
@@ -128,12 +130,17 @@ public class BooleanExpression extends NymtaxBaseVisitor {
     }
 
     @Override
-    public Boolean visitBoolean_variable(NymtaxParser.Boolean_variableContext ctx) {
+    public Boolean visitBoolean_variable(NymtaxParser.Boolean_variableContext ctx){
         String varName = ctx.IDENTIFIER().toString();
 
         Symbol variable = scope_.lookup(varName);
         if(variable == null){
             //TODO: throw error variable not found error
+            try {
+                throw new VariableNotFoundException();
+            } catch (VariableNotFoundException e) {
+                e.printStackTrace();
+            }
             return null;
         } else{
             String dataType = variable.getDataType();
@@ -144,6 +151,11 @@ public class BooleanExpression extends NymtaxBaseVisitor {
                     return (Float)variable.getValue() != 0 ;
                 default:
                     //TODO: throw error data mismatch error
+                    try {
+                        throw new DataMismatchException();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
                     return null;
             }
         }

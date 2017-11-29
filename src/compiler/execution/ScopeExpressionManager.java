@@ -2,6 +2,7 @@ package compiler.execution;
 
 import antlr4.generate.NymtaxBaseVisitor;
 import antlr4.generate.NymtaxParser;
+import compiler.exceptions.VariableNotFoundException;
 import compiler.objects.Function;
 import compiler.objects.Scope;
 import compiler.objects.Symbol;
@@ -36,9 +37,10 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
     public Object visitConst_declaration(NymtaxParser.Const_declarationContext ctx) {
         String datatype = ctx.list_var().getText();
         String id = ctx.IDENTIFIER().getText();
-
+        String value = ctx.constant().getText();
         Symbol constant = new Symbol(id, datatype, false);
         scope_.declare(constant);
+        scope_.initialize(constant.getIdentifier(), value);
 
         return true;
     }
@@ -65,7 +67,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
         scope_.declare(func);
 
-        return super.visitFunc_dec_send(ctx);
+        return true;
     }
 
     @Override
@@ -77,6 +79,8 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
 
         NymtaxParser.List_parameterContext parameters = ctx.func_without_send().function_call_stat().list_parameter();
+
+        if(parameters != null)
         for(int i=0; i<parameters.list_var().size(); i++){
             Symbol param = new Symbol(parameters.IDENTIFIER(i).getText(), parameters.list_var(i).getText(), true);
             func.declare(param);
@@ -84,14 +88,14 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
         scope_.declare(func);
 
-        return super.visitFunc_dec_none(ctx);
+        return true;
     }
-
+/*
     @Override
     public Object visitFunc_body(NymtaxParser.Func_bodyContext ctx) {
         return super.visitFunc_body(ctx);
     }
-
+*/
     @Override
     public Object visitAssign_constant(NymtaxParser.Assign_constantContext ctx) {
         String id = ctx.IDENTIFIER().getText();
@@ -101,6 +105,11 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
         if(symbol==null){
             //TODO: throw error variable not found;
+            try {
+                throw new VariableNotFoundException();
+            } catch (VariableNotFoundException e) {
+                e.printStackTrace();
+            }
         }else{
             //TODO switch for datatypes?
             /*
@@ -116,7 +125,37 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
 
 
-        return super.visitAssign_constant(ctx);
+        return true;
+    }
+
+    @Override
+    public Object visitAssign_expression(NymtaxParser.Assign_expressionContext ctx) {
+        String id = ctx.IDENTIFIER().getText();
+
+        Symbol symbol = scope_.lookup(id);
+
+        if(symbol==null){
+            //TODO: throw error variable not found;
+            try {
+                throw new VariableNotFoundException();
+            } catch (VariableNotFoundException e) {
+                e.printStackTrace();
+            }
+        }else{
+            //TODO switch for datatypes?
+            /*
+            switch(symbol.getDataType()){
+                case "INTEGER":
+                    symbol.setValue(Integer.parseInt(constant));
+                    break;
+            }
+            */
+
+            Object expression = ExecutionManager.getInstance().visit(ctx.expression());
+            symbol.setValue(expression);
+        }
+
+        return true;
     }
 
     @Override
@@ -138,12 +177,13 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
         scope_.declare(var);
 
-        return super.visitVar_dec_var(ctx);
+        return true;
     }
 
     @Override
     public Object visitVar_dec_const(NymtaxParser.Var_dec_constContext ctx) {
-        return visitConst_declaration(ctx.const_declaration());
+        visitConst_declaration(ctx.const_declaration());
+        return true;
     }
 
     @Override

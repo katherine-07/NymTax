@@ -26,6 +26,7 @@ import javax.swing.JTextArea;
 import antlr4.custom.NymtaxWalker;
 import antlr4.generate.NymtaxParser;
 
+import compiler.execution.ExecutionManager;
 import org.antlr.v4.runtime.*;
 
 import antlr4.custom.DetectionNymtaxWalker;
@@ -192,7 +193,9 @@ public class NymTaxUI {
 
 				parser.reset();
 
-				ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
+				//ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
+				ExecutionManager.getInstance().visit(parser.program());
+
                 consoleList.setModel(tokenListModel);
                 OutputscrollPane.setViewportView(consoleList);
                 consoleList.setLayoutOrientation(JList.VERTICAL);
