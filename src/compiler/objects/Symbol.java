@@ -7,6 +7,16 @@ public class Symbol {
     protected boolean isField;
     protected boolean isInitialized;
 
+    public static final String TYPE_INT     = "INTEGER";
+    public static final String TYPE_FLO     = "FLOAT";
+    public static final String TYPE_CHR     = "CHAR";
+    public static final String TYPE_STRNG   = "STRING";
+    public static final String TYPE_BOOL    = "BOOLEAN";
+
+
+    public static final String BOOL_TRUE    = "true";
+    public static final String BOOL_FALSE   = "false";
+
     public boolean isInitialized() {
         return isInitialized;
     }

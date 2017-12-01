@@ -112,10 +112,6 @@ public class NymtaxWalker extends NymtaxBaseListener {
         //resolve function content
     }
 
-    @Override public void enterSend_statement(NymtaxParser.Send_statementContext ctx) { }
-
-    @Override public void exitSend_statement(NymtaxParser.Send_statementContext ctx) { }
-
     @Override public void enterWrite_statement(NymtaxParser.Write_statementContext ctx) { }
 
     @Override public void exitWrite_statement(NymtaxParser.Write_statementContext ctx) {

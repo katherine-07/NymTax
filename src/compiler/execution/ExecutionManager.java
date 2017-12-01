@@ -19,35 +19,39 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     private HashMap<String, Function> globalFunctions;
     private Function mainFunction;
 
-    public Function getCurrentFunc() {
-        return currentFunc;
-    }
-
-    public void setCurrentFunc(Function currentFunc) {
-        this.currentFunc = currentFunc;
-    }
-
-    private Function currentFunc;
+    private Function currentFunc=null;
     private ScopeExpressionManager scopeExpressionManager;
     private BooleanExpression booleanExpression;
     private NumericalExpression numericalExpression;
 
     private ExecutionManager(){
-        mainFunction = new Function("RUN MAIN", null, null, "VOID");
-        globalFunctions = new HashMap<String, Function>();
-        currentFunc = mainFunction;
-
         scopeExpressionManager = new ScopeExpressionManager(currentFunc);
         booleanExpression = new BooleanExpression(currentFunc);
         numericalExpression = new NumericalExpression();
+        newProgram();
     }
 
+    public void newProgram(){
+        mainFunction = new Function("RUN MAIN", null, null, "VOID");
+        globalFunctions = new HashMap<String, Function>();
+        currentFunc = mainFunction;
+        scopeExpressionManager.setScope_(currentFunc);
+        booleanExpression.setScope_(currentFunc);
+    }
     public static ExecutionManager getInstance() {
         if(instance==null){
             instance = new ExecutionManager();
         }
 
         return instance;
+    }
+
+    public Function getCurrentFunc() {
+        return currentFunc;
+    }
+
+    public void setCurrentFunc(Function currentFunc) {
+        this.currentFunc = currentFunc;
     }
 
     @Override
@@ -105,6 +109,60 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     }
 
     @Override
+    public Object visitStatement_send(NymtaxParser.Statement_sendContext ctx) {
+        visit(ctx.send_statement());
+        return currentFunc.getSendSymbol();
+    }
+
+    @Override
+    public Object visitSend_const(NymtaxParser.Send_constContext ctx) {
+        String constant = ctx.constant().getText();
+        Symbol symbol = currentFunc.getSendSymbol();
+        symbol = scopeExpressionManager.constantAssignment(symbol, constant);
+        currentFunc.setSendSymbol(symbol);
+        return symbol.getValue();
+    }
+
+    @Override
+    public Object visitSend_variable(NymtaxParser.Send_variableContext ctx) {
+        Symbol symbol = currentFunc.getSendSymbol();
+        String id = ctx.IDENTIFIER().getText();
+        Symbol send = currentFunc.lookup(id);
+
+        if(send.getDataType().equals(currentFunc.getSendType())) {
+            symbol.setValue(send.getValue());
+        }else{
+            symbol.setValue(null);
+            //TODO: error mismatch datatype
+
+            System.out.println("ERROR: SEND datatype mismatch - "+currentFunc.getSendSymbol()+" not found.");
+        }
+
+        currentFunc.setSendSymbol(symbol);
+        return symbol.getValue();
+    }
+
+    @Override
+    public Object visitSend_expr(NymtaxParser.Send_exprContext ctx) {
+        Object expression = visit(ctx.expression());
+        System.out.print("SENDING!!!");
+        Symbol symbol = currentFunc.getSendSymbol();
+
+        symbol = scopeExpressionManager.assignExpression(symbol, expression);
+        currentFunc.setSendSymbol(symbol);
+        return symbol.getValue();
+    }
+
+    @Override
+    public Object visitStatement_func_call(NymtaxParser.Statement_func_callContext ctx) {
+        visit(ctx.function_call_stat());
+        Object send = currentFunc.getSendSymbol().getValue();
+        currentFunc = currentFunc.getParentScope();
+
+        return send;
+    }
+
+    @Override
     public Object visitFunction_call_stat(NymtaxParser.Function_call_statContext ctx) {
         String id = ctx.IDENTIFIER().getText();
 
@@ -127,7 +185,9 @@ public class ExecutionManager extends NymtaxBaseVisitor{
         if(ctx.list_parameter() != null) {
             currentFunc.initializeParameter(paramValues);
         }
-        return visit(currentFunc.getContex());
+         visit(currentFunc.getContex());
+
+        return currentFunc.getSendSymbol().getValue();
     }
 
     @Override
@@ -143,6 +203,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
     @Override
     public Object visitWrite_statement(NymtaxParser.Write_statementContext ctx) {
+
         List<ParseTree> tree = ctx.write_list().children;
         System.out.print("CONSOLE: ");
         for (ParseTree t: tree

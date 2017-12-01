@@ -169,6 +169,7 @@ public class NymTaxUI {
 			public void actionPerformed(ActionEvent arg0) {
 
                 System.out.println("Run button clicked!");
+                ExecutionManager.getInstance().newProgram();
                 code = CodeArea.getText();
 
                 NymtaxLexer lex = new NymtaxLexer(CharStreams.fromString(code));

@@ -32,6 +32,7 @@ INT     : 'INTEGER';
 FLO     : 'FLOAT';
 CHR     : 'CHAR';
 STRNG   : 'STRING';
+BOOL    : 'BOOLEAN';
 
 // STRING SEQUENCES --------
 
@@ -124,13 +125,39 @@ URSHIFT_ASSIGN  : '>>>=';
 
 NEW       : 'NEW';
 
+data_type : INT | FLO | CHR | STRNG | BOOL;
+
+	//**** Lexer ****//
+
+ // ** expressions ** //
+
+ // ** declarations ** //
+
+INTEGER			: SIGN NUMBER;
+SIGN			: ADD | SUB;
+FLOAT			: NUMBER DOT NUMBER;
+CHAR			: CARET ASCII CARET;
+				  // ^ as '
+
 IDENTIFIER		: LETTER | LETTER LETTER_NUMBER+;
 
-data_type : INT | FLO | CHR | STRNG;
+// ** usual ** *//
 
+NUMBER 			: [0-9] ;
+LETTER			: [a-z] | [A-Z] ;
+LETTER_NUMBER	: NUMBER|LETTER;
+ASCII			: LETTER_NUMBER |
+ 				 '\u0021'..'\u002f' |
+ 				 '\u003a'..'\u0040' |
+ 				 '\u005b'..'\u0060' |
+ 				 '\u007b'..'\u007f' ;
+ASCII_CHARS		: ASCII+ ;
+WS  :  [ \t\r\n\u000C]+ -> skip ;
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var  IDENTIFIER (ASSIGN IDENTIFIER)?         #var_dec_var
+var_declaration	: list_var  IDENTIFIER ASSIGN IDENTIFIER              #var_dec_ident
+                    | list_var IDENTIFIER ASSIGN expression           #var_dec_expr
+                    | list_var IDENTIFIER                           #var_dec_var
                     | const_declaration                             #var_dec_const
                     | array_initialization                          #var_array_init;
 
@@ -142,9 +169,11 @@ list_var		: data_type LBRACK RBRACK
 // CONSTANT DECLARATION //
 list_constants      : (const_declaration SEMI )+;
 const_declaration 	: list_var IDENTIFIER ASSIGN constant;
-constant			: INTEGER
+constant			: op=(ADD|SUB) NUMBER
                         | FLOAT
-                        | CHAR | STRING;
+                        | CHAR
+                        | STRING
+                        | bool=(TRUE|FALSE);
 
 // ARRAY INITIALIZARION //
 array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK SEMI
@@ -171,12 +200,14 @@ function_call_stat	:   IDENTIFIER LPAREN list_parameter? RPAREN;
 list_parameter		:   list_var IDENTIFIER ((COMMA list_var IDENTIFIER)+)?;
 
 
-send_statement		: SEND expression;
+send_statement		: SEND constant                 #send_const
+                        | SEND IDENTIFIER           #send_variable
+                        | SEND expression           #send_expr;
 
 expression			: string_expression                             #visit_stringexpr
                     | numerical_expression                          #visit_numexpr
                     | boolean_expression                            #visit_boolexpr
-                    | func_with_send LPAREN list_parameter RPAREN   #visit_func_call;
+                    | function_call_stat                            #visit_func_call;
 
 string_expression	: ADD string_expression
                     | NOT string_expression
@@ -186,14 +217,14 @@ string_expression	: ADD string_expression
 
 numerical_expression: numerical_expression op=(MUL|DIV|MOD) numerical_expression # numerical_MDM
                     | numerical_expression op=(ADD|SUB) numerical_expression     # numerical_AS
-                    | NFACTOR                                                    # numerical_val
+                    | value=(INTEGER|FLOAT)                                      # numerical_val
                     | '('numerical_expression')'                                 # numerical_paren
-                    | SUB '('numerical_expression')'                             # numerical_negparen ;
+                    | SUB '('numerical_expression')'                             # numerical_negparen;
 
 
-boolean_expression		: boolean_expression OR boolean_expression    #boolean_or
-                    | boolean_expression AND boolean_expression   #boolean_and
-                    | boolean_logic                                   #boolean_log;
+boolean_expression		: boolean_expression OR boolean_expression      #boolean_or
+                    | boolean_expression AND boolean_expression         #boolean_and
+                    | boolean_logic                                     #boolean_log;
 
 boolean_logic 	: LPAREN boolean_expression RPAREN      #boolean_paren
                     | NOT boolean_expression            #boolean_not
@@ -208,9 +239,8 @@ bool_term			: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) n
                     | FALSE                                                                     #boolean_false;
 // ASSIGNMENT STATEMENTS //
 assign			: IDENTIFIER ASSIGN IDENTIFIER              #assign_variable
-                | IDENTIFIER ASSIGN constant                #assign_constant
                 | IDENTIFIER ASSIGN expression              #assign_expression
-                | IDENTIFIER ASSIGN function_call_stat      #assign_function;
+                | IDENTIFIER ASSIGN constant                #assign_constant;
 
 // INPUT OUTPUT //
 write_statement	: WRITE LPAREN write_list RPAREN ;
@@ -250,29 +280,3 @@ func_body				: LBRACE list_statement? RBRACE;
 func_main				: RUN_MAIN func_body;
 
 
-	//**** Lexer ****//
-
- // ** expressions ** //
-
-NFACTOR				: CHAR | INTEGER | FLOAT | IDENTIFIER ;												//removed
-
- // ** declarations ** //
-
-INTEGER			: SIGN NUMBER;
-SIGN			: ADD | SUB;
-FLOAT			: NUMBER DOT NUMBER;
-CHAR			: CARET ASCII CARET;
-				  // ^ as '
-
-// ** usual ** *//
-
-ASCII			: LETTER_NUMBER |
- 				 '\u0021'..'\u002f' |
- 				 '\u003a'..'\u0040' |
- 				 '\u005b'..'\u0060' |
- 				 '\u007b'..'\u007f' ;
-ASCII_CHARS		: ASCII+ ;
-WS  :  [ \t\r\n\u000C]+ -> skip ;
-LETTER_NUMBER	: NUMBER|LETTER;
-LETTER			: [a-z] | [A-Z] ;
-NUMBER 			: [0-9] ;

@@ -112,7 +112,7 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Object visitNumerical_val(NymtaxParser.Numerical_valContext ctx) {
-        return Float.valueOf(ctx.NFACTOR().getText());
+        return Float.valueOf(ctx.value.getText());
     }
 
     @Override

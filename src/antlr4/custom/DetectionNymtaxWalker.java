@@ -83,6 +83,26 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 	}
 
     @Override
+    public void enterVar_dec_ident(Var_dec_identContext ctx) {
+
+    }
+
+    @Override
+    public void exitVar_dec_ident(Var_dec_identContext ctx) {
+
+    }
+
+    @Override
+    public void enterVar_dec_expr(Var_dec_exprContext ctx) {
+
+    }
+
+    @Override
+    public void exitVar_dec_expr(Var_dec_exprContext ctx) {
+
+    }
+
+    @Override
     public void enterVar_dec_var(NymtaxParser.Var_dec_varContext ctx) {
 
     }
@@ -342,19 +362,36 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] END OF PARAMETER LIST");
 	}
 
-	@Override
-	public void enterSend_statement(Send_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Send statement found: "+ctx.getText());
-	}
+    @Override
+    public void enterSend_const(Send_constContext ctx) {
 
-	@Override
-	public void exitSend_statement(Send_statementContext ctx) {
-		// TODO Auto-generated method stub
-//		if(output == 0)
-//			logger.info("[INFO] Exiting send statement.");
-	}
+    }
+
+    @Override
+    public void exitSend_const(Send_constContext ctx) {
+
+    }
+
+    @Override
+    public void enterSend_variable(Send_variableContext ctx) {
+
+    }
+
+    @Override
+    public void exitSend_variable(Send_variableContext ctx) {
+
+    }
+
+    @Override
+    public void enterSend_expr(Send_exprContext ctx) {
+
+    }
+
+    @Override
+    public void exitSend_expr(Send_exprContext ctx) {
+
+    }
+
 
     @Override
     public void enterVisit_stringexpr(Visit_stringexprContext ctx) {
@@ -610,15 +647,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
     }
 
-    @Override
-    public void enterAssign_function(NymtaxParser.Assign_functionContext ctx) {
-
-    }
-
-    @Override
-    public void exitAssign_function(NymtaxParser.Assign_functionContext ctx) {
-
-    }
 
     @Override
 	public void enterWrite_statement(Write_statementContext ctx) {

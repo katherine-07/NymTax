@@ -12,6 +12,7 @@ public class Function extends Symbol implements Scope {
     private Function parent;
     private ParserRuleContext ctx;
     private Symbol sendSymbol;
+
     private String sendType;
 
     public Function(String id, Function parent, ParserRuleContext ctx, String sendType){
@@ -20,6 +21,8 @@ public class Function extends Symbol implements Scope {
         functions = new HashMap<>();
         parameterIds = new ArrayList<>();
 
+        sendSymbol = new Symbol("send", sendType, false);
+        sendSymbol.setValue(null);
         this.parent = parent;
         this.ctx = ctx;
         this.sendType = sendType;
@@ -31,6 +34,14 @@ public class Function extends Symbol implements Scope {
 
     public void setSendSymbol(Symbol sendSymbol) {
         this.sendSymbol = sendSymbol;
+    }
+
+    public String getSendType() {
+        return sendType;
+    }
+
+    public void setSendType(String sendType) {
+        this.sendType = sendType;
     }
 
 
