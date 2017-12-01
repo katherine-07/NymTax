@@ -25,18 +25,16 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     private NumericalExpression numericalExpression;
 
     private ExecutionManager(){
-        scopeExpressionManager = new ScopeExpressionManager(currentFunc);
-        booleanExpression = new BooleanExpression(currentFunc);
+        scopeExpressionManager = new ScopeExpressionManager();
+        booleanExpression = new BooleanExpression();
         numericalExpression = new NumericalExpression();
         newProgram();
     }
 
     public void newProgram(){
-        mainFunction = new Function("RUN MAIN", null, null, "VOID");
+        mainFunction = new Function("ROOT", null, null, "VOID");
         globalFunctions = new HashMap<String, Function>();
         currentFunc = mainFunction;
-        scopeExpressionManager.setScope_(currentFunc);
-        booleanExpression.setScope_(currentFunc);
     }
     public static ExecutionManager getInstance() {
         if(instance==null){
@@ -59,7 +57,6 @@ public class ExecutionManager extends NymtaxBaseVisitor{
         NymtaxParser.List_constantsContext listConstants = ctx.list_constants();
         NymtaxParser.List_func_declarationContext listFuncDec = ctx.list_func_declaration();
 
-        scopeExpressionManager.setScope_(currentFunc);
 
         if(listConstants != null) {
             scopeExpressionManager.visit(listConstants);
@@ -69,8 +66,8 @@ public class ExecutionManager extends NymtaxBaseVisitor{
             scopeExpressionManager.visit(listFuncDec);
         }
 
-        currentFunc = scopeExpressionManager.getScope_();
 
+        currentFunc = new Function("RUN MAIN", mainFunction, ctx.func_main().func_body(), "VOID");
         visit(ctx.func_main().func_body());
 
         //TODO
@@ -81,7 +78,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     public Object visitFunc_body(NymtaxParser.Func_bodyContext ctx) {
         visit(ctx.list_statement());
 
-        return true;
+        return currentFunc.getSendSymbol().getValue();
     }
 
     @Override
@@ -96,14 +93,12 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
     @Override
     public Object visitStatement_var_dec(NymtaxParser.Statement_var_decContext ctx) {
-        scopeExpressionManager.setScope_(currentFunc);
         scopeExpressionManager.visit(ctx.var_declaration());
         return null;
     }
 
     @Override
     public Object visitStatement_assign(NymtaxParser.Statement_assignContext ctx) {
-        scopeExpressionManager.setScope_(currentFunc);
         scopeExpressionManager.visit(ctx.assign());
         return true;
     }
@@ -145,7 +140,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     @Override
     public Object visitSend_expr(NymtaxParser.Send_exprContext ctx) {
         Object expression = visit(ctx.expression());
-        System.out.print("SENDING!!!");
+
         Symbol symbol = currentFunc.getSendSymbol();
 
         symbol = scopeExpressionManager.assignExpression(symbol, expression);
@@ -155,9 +150,8 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
     @Override
     public Object visitStatement_func_call(NymtaxParser.Statement_func_callContext ctx) {
-        visit(ctx.function_call_stat());
-        Object send = currentFunc.getSendSymbol().getValue();
-        currentFunc = currentFunc.getParentScope();
+
+        Object send = visit(ctx.function_call_stat());
 
         return send;
     }
@@ -166,7 +160,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     public Object visitFunction_call_stat(NymtaxParser.Function_call_statContext ctx) {
         String id = ctx.IDENTIFIER().getText();
 
-        Function func = currentFunc.localLookupFunc(id);
+        Function func = currentFunc.lookupFunc(id);
 
         List<Object> paramValues = new ArrayList<>();
         List<TerminalNode> params = new ArrayList<>();
@@ -180,14 +174,15 @@ public class ExecutionManager extends NymtaxBaseVisitor{
             paramValues.add(val);
         }
 
-        currentFunc = func;
+        currentFunc = new Function(func.getIdentifier(), currentFunc, func.getContex(), func.getSendType());
 
         if(ctx.list_parameter() != null) {
             currentFunc.initializeParameter(paramValues);
         }
          visit(currentFunc.getContex());
-
-        return currentFunc.getSendSymbol().getValue();
+        Object sendValue = currentFunc.getSendSymbol().getValue();
+        currentFunc = currentFunc.getParentScope();
+        return sendValue;
     }
 
     @Override
@@ -229,7 +224,6 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
     @Override
     public Object visitVisit_boolexpr(NymtaxParser.Visit_boolexprContext ctx) {
-        booleanExpression.setScope_(currentFunc);
         return booleanExpression.visit(ctx.boolean_expression());
     }
 

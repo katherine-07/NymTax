@@ -9,7 +9,7 @@ public class ExpressionExecutionManager extends NymtaxBaseVisitor{
     private NumericalExpression numericalExpression;
 
     private ExpressionExecutionManager(){
-        booleanExpression = new BooleanExpression(null);
+        booleanExpression = new BooleanExpression();
         numericalExpression = new NumericalExpression();
     }
 

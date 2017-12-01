@@ -22,12 +22,12 @@ public class ConditionalExpression extends NymtaxBaseVisitor {
     public ConditionalExpression(Function scope)
     {
         scope_ = scope;
-        booleanExpression = new BooleanExpression(scope);
+        booleanExpression = new BooleanExpression();
     }
 
     @Override
     public Object visitConditional_if(NymtaxParser.Conditional_ifContext ctx) {
-        booleanExpression.setScope_(scope_);
+
         Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
 
         if(a){
@@ -43,7 +43,7 @@ public class ConditionalExpression extends NymtaxBaseVisitor {
 
     @Override
     public Object visitConditional_ifelse(NymtaxParser.Conditional_ifelseContext ctx) {
-        booleanExpression.setScope_(scope_);
+
         Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
 
         if(a){

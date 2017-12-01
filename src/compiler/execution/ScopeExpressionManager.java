@@ -11,18 +11,7 @@ import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
 
-    public Function getScope_() {
-        return scope_;
-    }
-
-    public void setScope_(Function scope_) {
-        this.scope_ = scope_;
-    }
-
-    private Function scope_;
-
-    public ScopeExpressionManager(Function scope){
-        scope_ = scope;
+    public ScopeExpressionManager(){
     }
 
 
@@ -36,6 +25,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitConst_declaration(NymtaxParser.Const_declarationContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String datatype = ctx.list_var().getText();
         String id = ctx.IDENTIFIER().getText();
         String value = ctx.constant().getText();
@@ -56,6 +46,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitFunc_dec_send(NymtaxParser.Func_dec_sendContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String dataType = ctx.func_with_send().data_type().getText();
         String id = ctx.func_with_send().function_call_stat().IDENTIFIER().getText();
 
@@ -74,6 +65,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitFunc_dec_none(NymtaxParser.Func_dec_noneContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String dataType = "VOID";
         String id = ctx.func_without_send().function_call_stat().IDENTIFIER().getText();
 
@@ -100,6 +92,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 */
     @Override
     public Object visitAssign_constant(NymtaxParser.Assign_constantContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String id = ctx.IDENTIFIER().getText();
         String constant = ctx.constant().getText();
 
@@ -178,6 +171,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitAssign_expression(NymtaxParser.Assign_expressionContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String id = ctx.IDENTIFIER().getText();
 
         Symbol symbol = scope_.lookup(id);
@@ -256,6 +250,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitVar_dec_expr(NymtaxParser.Var_dec_exprContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
         String dataType = ctx.list_var().getText();
         String id = ctx.IDENTIFIER().getText();
@@ -268,13 +263,12 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
         assignExpression(var, expression);
 
-        scope_.initialize(id, var.getValue());
-
         return true;
     }
 
     @Override
     public Object visitVar_dec_ident(NymtaxParser.Var_dec_identContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
         String dataType = ctx.list_var().getText();
         String id = ctx.IDENTIFIER(0).getText();
@@ -294,6 +288,7 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
     @Override
     public Object visitVar_dec_var(NymtaxParser.Var_dec_varContext ctx) {
+        Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
         String dataType = ctx.list_var().getText();
         String id = ctx.IDENTIFIER().getText();

@@ -122,11 +122,11 @@ public class Function extends Symbol implements Scope {
     }
 
 
-    public Symbol lookupFunc(String id){
+    public Function lookupFunc(String id){
         if(functions.containsKey(id)){
             return functions.get(id);
         }else if(parent != null){
-            return parent.lookup(id);
+            return parent.lookupFunc(id);
         }else{
             return null;
         }

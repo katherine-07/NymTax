@@ -168,7 +168,7 @@ public class NymTaxUI {
 		RunButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-                System.out.println("Run button clicked!");
+                System.out.println("-------- RUNNING PROGRAM --------");
                 ExecutionManager.getInstance().newProgram();
                 code = CodeArea.getText();
 
@@ -183,7 +183,6 @@ public class NymTaxUI {
 						logger.info("[TOKEN] Token #" + (t.getTokenIndex() + 1) + " found: "
 								+ t.getText() + " | Type: " + NymtaxLexer.VOCABULARY.getSymbolicName(t.getType()));
 
-						System.out.println("----------------");
 					}
 				}
 				NymtaxParser parser = new NymtaxParser(tokens);

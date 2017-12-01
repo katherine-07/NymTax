@@ -9,18 +9,8 @@ import compiler.objects.Symbol;
 
 public class BooleanExpression extends NymtaxBaseVisitor {
 
-    public Scope getScope_() {
-        return scope_;
-    }
 
-    public void setScope_(Scope scope_) {
-        this.scope_ = scope_;
-    }
-
-    private Scope scope_;
-
-    public BooleanExpression(Scope scope){
-        scope_ = scope;
+    public BooleanExpression(){
     }
 
     /// boolean_expression
@@ -133,7 +123,7 @@ public class BooleanExpression extends NymtaxBaseVisitor {
     public Boolean visitBoolean_variable(NymtaxParser.Boolean_variableContext ctx){
         String varName = ctx.IDENTIFIER().toString();
 
-        Symbol variable = scope_.lookup(varName);
+        Symbol variable = ExecutionManager.getInstance().getCurrentFunc().lookup(varName);
         if(variable == null){
             //TODO: throw error variable not found error
             try {
