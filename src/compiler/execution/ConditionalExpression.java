@@ -26,7 +26,7 @@ public class ConditionalExpression extends NymtaxBaseVisitor {
         Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
 
         if(a){
-            Function scopeIf = new Function("if", manager.getCurrentFunc(), ctx,null);
+            Function scopeIf = new Function("if", manager.getCurrentFunc(), ctx.list_statement(),null);
             manager.setCurrentFunc(scopeIf);
             manager.visit(ctx.list_statement());
 
@@ -42,13 +42,61 @@ public class ConditionalExpression extends NymtaxBaseVisitor {
         Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
 
         if(a){
-            Function scopeIf = new Function("if", manager.getCurrentFunc(), ctx,null);
+            Function scopeIf = new Function("if", manager.getCurrentFunc(), ctx.list_statement(),null);
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            manager.setCurrentFunc(scopeIf.getParentScope());
         }
         else{
             Function scopeElse = new Function("else", manager.getCurrentFunc(), ctx,null);
+            visit(ctx.otherwise_when_statement());
         }
 
-        return super.visitConditional_ifelse(ctx);
+        return true;
+    }
+
+    @Override
+    public Object visitOtherwise_when(NymtaxParser.Otherwise_whenContext ctx) {
+
+        Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+
+        if(a){
+            Function scopeIf = new Function("elseif", manager.getCurrentFunc(), ctx.list_statement(),null);
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            manager.setCurrentFunc(scopeIf.getParentScope());
+        }
+
+        return true;
+    }
+
+    @Override
+    public Object visitOtherwise_when_mult(NymtaxParser.Otherwise_when_multContext ctx) {
+
+        Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+
+        if(a){
+            Function scopeIf = new Function("elseif", manager.getCurrentFunc(), ctx.list_statement(),null);
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            manager.setCurrentFunc(scopeIf.getParentScope());
+        }else{
+            visit(ctx.otherwise_when_statement());
+        }
+        return true;
+    }
+
+    @Override
+    public Object visitOtherwise(NymtaxParser.OtherwiseContext ctx) {
+        Function scopeIf = new Function("else", manager.getCurrentFunc(), ctx.list_statement(),null);
+        manager.setCurrentFunc(scopeIf);
+        manager.visit(ctx.list_statement());
+
+        manager.setCurrentFunc(scopeIf.getParentScope());
+        return true;
     }
 
     @Override
@@ -119,5 +167,55 @@ public class ConditionalExpression extends NymtaxBaseVisitor {
 
 
         return caseIndex;
+    }
+
+    @Override
+    public Object visitLoop_while(NymtaxParser.Loop_whileContext ctx) {
+        Boolean a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+
+        Function scopeIf = new Function("while", manager.getCurrentFunc(), ctx.list_statement(),null);
+        while(a){
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+        }
+
+        manager.setCurrentFunc(scopeIf.getParentScope());
+        return true;
+    }
+
+    @Override
+    public Object visitLoop_dowhile(NymtaxParser.Loop_dowhileContext ctx) {
+        Boolean a ;
+        Function scopeIf = new Function("dowhile", manager.getCurrentFunc(), ctx.list_statement(),null);
+
+        do{
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+        }while(a);
+
+        manager.setCurrentFunc(scopeIf.getParentScope());
+        return true;
+    }
+
+    @Override
+    public Object visitLoop_for(NymtaxParser.Loop_forContext ctx) {
+        Boolean a ;
+        Function scopeIf = new Function("for", manager.getCurrentFunc(), ctx.list_statement(),null);
+        super.visit(ctx.assign(0));
+        a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+        do{
+            manager.setCurrentFunc(scopeIf);
+            manager.visit(ctx.list_statement());
+
+            super.visit(ctx.assign(1));
+            a = (Boolean) booleanExpression.visit(ctx.boolean_expression());
+        }while(a);
+
+        manager.setCurrentFunc(scopeIf.getParentScope());
+        return true;
     }
 }

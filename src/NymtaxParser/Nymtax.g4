@@ -162,7 +162,6 @@ var_declaration	: list_var  IDENTIFIER ASSIGN IDENTIFIER              #var_dec_i
                     | array_initialization                          #var_array_init;
 
 list_var		: data_type LBRACK RBRACK
-                    | data_type MUL
                     | data_type;
 // ~ as =
 
@@ -176,8 +175,8 @@ constant			: op=(ADD|SUB) NUMBER
                         | bool=(TRUE|FALSE);
 
 // ARRAY INITIALIZARION //
-array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK SEMI
-                            | data_type IDENTIFIER LBRACK RBRACK ASSIGN LBRACE (NUMBER)+ (COMMA)+ RBRACE SEMI;
+array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK ;
+array_call              :   IDENTIFIER LBRACK NUMBER RBRACK ;
 
 // STATEMENT //
 list_statement	: LBRACE list_statement RBRACE
@@ -218,6 +217,8 @@ string_expression	: ADD string_expression
 numerical_expression: numerical_expression op=(MUL|DIV|MOD) numerical_expression # numerical_MDM
                     | numerical_expression op=(ADD|SUB) numerical_expression     # numerical_AS
                     | value=(INTEGER|FLOAT)                                      # numerical_val
+                    | IDENTIFIER                                                 # numerical_var
+                    | array_call                                                 # numerical_arr
                     | '('numerical_expression')'                                 # numerical_paren
                     | SUB '('numerical_expression')'                             # numerical_negparen;
 
@@ -256,8 +257,10 @@ input_IDENTIFIER	: AT_SIGN IDENTIFIER;
 // CONDITIONAL STATEMENTS //
 when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE                                           #conditional_if
                 |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE otherwise_when_statement                 #conditional_ifelse;
-otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE otherwise_when_statement?
-                        |   OTHERWISE LBRACE list_statement? RBRACE;
+
+otherwise_when_statement:   OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE                           #otherwise_when
+	                    |   OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE otherwise_when_statement  #otherwise_when_mult
+                        |   OTHERWISE LBRACE list_statement? RBRACE                                                                 #otherwise;
 
 condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch_expr
                     | CONDITION LPAREN IDENTIFIER RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch_variable;
