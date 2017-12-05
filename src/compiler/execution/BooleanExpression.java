@@ -130,6 +130,7 @@ public class BooleanExpression extends NymtaxBaseVisitor {
                 throw new VariableNotFoundException();
             } catch (VariableNotFoundException e) {
                 e.printStackTrace();
+                System.out.println("Variable cannot be found.");
             }
             return null;
         } else{
@@ -145,6 +146,7 @@ public class BooleanExpression extends NymtaxBaseVisitor {
                         throw new DataMismatchException();
                     }catch (Exception e){
                         e.printStackTrace();
+                        System.out.println("Data mismatch Found!");
                     }
                     return null;
             }

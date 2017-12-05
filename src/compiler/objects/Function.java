@@ -1,5 +1,6 @@
 package compiler.objects;
 
+import compiler.exceptions.ParameterMismatchException;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.*;
@@ -10,6 +11,11 @@ public class Function extends Symbol implements Scope {
     private HashMap<String, Symbol> symbols;
     private HashMap<String, Function> functions;
     private Function parent;
+
+    public void setCtx(ParserRuleContext ctx) {
+        this.ctx = ctx;
+    }
+
     private ParserRuleContext ctx;
     private Symbol sendSymbol;
 
@@ -62,7 +68,13 @@ public class Function extends Symbol implements Scope {
                 this.lookup(parameterIds.get(i)).setValue(params.get(i));
             }
         }else{
-            //TODO: throw parameter mismatch exception
+            //TODO: throw error data mismatch error
+            try {
+                throw new ParameterMismatchException();
+            }catch (Exception e){
+                e.printStackTrace();
+                System.out.println("Parameter mismatch Found!");
+            }
         }
 
     }

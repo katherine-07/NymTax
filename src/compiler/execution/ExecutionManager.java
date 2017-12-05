@@ -3,6 +3,7 @@ package compiler.execution;
 import antlr4.generate.NymtaxBaseVisitor;
 import antlr4.generate.NymtaxParser;
 import antlr4.generate.NymtaxParser.StatementContext;
+import compiler.exceptions.VariableNotFoundException;
 import compiler.objects.Function;
 import compiler.objects.Symbol;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -215,6 +216,12 @@ public class ExecutionManager extends NymtaxBaseVisitor{
                 System.out.print(s.getValue());
             }else{
                 //TODO: Error - variable not found exception
+                try {
+                    throw new VariableNotFoundException();
+                } catch (VariableNotFoundException e) {
+                    e.printStackTrace();
+                    System.out.println("Variable cannot be found.");
+                }
             }
         }
 

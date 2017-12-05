@@ -255,15 +255,16 @@ input_IDENTIFIER	: AT_SIGN IDENTIFIER;
 
 // CONDITIONAL STATEMENTS //
 when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE                                           #conditional_if
-                |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE OTHERWISE LBRACE list_statement? RBRACE  #conditional_ifelse
-                |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE (otherwise_when_statement+)              #conditional_ifelseif;
-otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE   ;
+                |  WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE otherwise_when_statement                 #conditional_ifelse;
+otherwise_when_statement:	OTHERWISE WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE otherwise_when_statement?
+                        |   OTHERWISE LBRACE list_statement? RBRACE;
 
-condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch;
+condition_statement	: CONDITION LPAREN expression RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch_expr
+                    | CONDITION LPAREN IDENTIFIER RPAREN LBRACE list_event? base_statement RBRACE  #conditional_switch_variable;
 
-list_event	: (EVENT expression COLON (list_statement)?)+ #conditional_switche;
+list_event	: (EVENT expression COLON (list_statement)?)+ ;
 
-base_statement : BASE COLON list_statement? #condtional_base;
+base_statement : BASE COLON list_statement? ;
 
 // LOOP STATEMENTS //
 loop_every_statement : EVERY LPAREN assign COMMA boolean_expression COMMA assign RPAREN LBRACE list_statement? RBRACE  #loop_for;
