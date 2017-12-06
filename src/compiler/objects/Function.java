@@ -21,13 +21,13 @@ public class Function extends Symbol implements Scope {
 
     private String sendType;
 
-    public Function(String id, Function parent, ParserRuleContext ctx, String sendType){
-        super(id, Scope.TYPE_FUNCTION, true);
+    public Function(String id, Function parent, ParserRuleContext ctx, String sendType, Boolean isSendArray){
+        super(id, Scope.TYPE_FUNCTION, true, false);
         symbols = new HashMap<>();
         functions = new HashMap<>();
         parameterIds = new ArrayList<>();
 
-        sendSymbol = new Symbol("send", sendType, false);
+        sendSymbol = new Symbol("send", sendType, false, isSendArray);
         sendSymbol.setValue(null);
         this.parent = parent;
         this.ctx = ctx;
@@ -56,9 +56,11 @@ public class Function extends Symbol implements Scope {
         return ctx;
     }
 
-    public void addParameter(String id, String dataType){
+    public void addParameter(String id, String dataType, Boolean isArray){
         parameterIds.add(id);
-        Symbol param = new Symbol(id, dataType, false);
+
+
+        Symbol param = new Symbol(id, dataType, false, isArray);
         declare(param);
     }
 

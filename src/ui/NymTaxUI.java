@@ -52,6 +52,7 @@ public class NymTaxUI {
 	private NymtaxErrorListener listener = new NymtaxErrorListener();
 	private DetectionNymtaxWalker walker = new DetectionNymtaxWalker();
 	private NymtaxWalker mainWalker = new NymtaxWalker();
+	private ExecutionManager executionManager = ExecutionManager.getInstance();
 	private ANTLRErrorStrategy errorStrategy = new DefaultErrorStrategy();
 	JScrollPane OutputscrollPane;
 	/**
@@ -168,7 +169,6 @@ public class NymTaxUI {
 		RunButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 
-                System.out.println("-------- RUNNING PROGRAM --------");
                 ExecutionManager.getInstance().newProgram();
                 code = CodeArea.getText();
 
@@ -190,8 +190,12 @@ public class NymTaxUI {
 				parser.setErrorHandler(errorStrategy);
 
 				ParseTreeWalker.DEFAULT.walk(walker, parser.program());
-
 				parser.reset();
+//				ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
+//				parser.reset();
+
+
+				System.out.println("-------- RUNNING PROGRAM --------");
 
 				//ParseTreeWalker.DEFAULT.walk(mainWalker, parser.program());
 				ExecutionManager.getInstance().visit(parser.program());
@@ -202,7 +206,7 @@ public class NymTaxUI {
 
                 //ParseTree t = parser.compilationUnit();
                 // txtConsole.setText("\n Parse tree: " + t.toStringTree(parser) );
-
+				System.out.println("====== END PROGRAM EXECUTION =====");
 			}
 		});
 		RunButton.setFont(new Font("Tahoma", Font.PLAIN, 20));

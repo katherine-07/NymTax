@@ -8,6 +8,8 @@ import compiler.objects.Scope;
 import compiler.objects.Symbol;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+import java.util.ArrayList;
+
 public class ScopeExpressionManager extends NymtaxBaseVisitor {
 
 
@@ -26,10 +28,10 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
     @Override
     public Object visitConst_declaration(NymtaxParser.Const_declarationContext ctx) {
         Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
-        String datatype = ctx.list_var().getText();
+        String datatype = ctx.data_type().getText();
         String id = ctx.IDENTIFIER().getText();
         String value = ctx.constant().getText();
-        Symbol constant = new Symbol(id, datatype, false);
+        Symbol constant = new Symbol(id, datatype, false, false);
         scope_.declare(constant);
         scope_.initialize(constant.getIdentifier(), value);
 
@@ -50,12 +52,15 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
         String dataType = ctx.func_with_send().data_type().getText();
         String id = ctx.func_with_send().function_call_stat().IDENTIFIER().getText();
 
-        Function func = new Function(id, scope_, ctx.func_with_send().func_body(), dataType);
+
+        Function func = new Function(id, scope_, ctx.func_with_send().func_body(), dataType, false);
 
         NymtaxParser.List_parameterContext parameters = ctx.func_with_send().function_call_stat().list_parameter();
         if(parameters != null)
             for(int i=0; i<parameters.list_var().size(); i++){
-                func.addParameter(parameters.IDENTIFIER(i).getText(), parameters.list_var(i).getText());
+                Boolean isArray = parameters.list_var(i).RBRACK() != null;
+
+                func.addParameter(parameters.IDENTIFIER(i).getText(), parameters.list_var(i).getText(), isArray);
             }
 
         scope_.declare(func);
@@ -69,14 +74,14 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
         String dataType = "VOID";
         String id = ctx.func_without_send().function_call_stat().IDENTIFIER().getText();
 
-        Function func = new Function(id, scope_, ctx.func_without_send().func_body(), dataType);
+        Function func = new Function(id, scope_, ctx.func_without_send().func_body(), dataType, false);
 
 
         NymtaxParser.List_parameterContext parameters = ctx.func_without_send().function_call_stat().list_parameter();
 
         if(parameters != null)
         for(int i=0; i<parameters.list_var().size(); i++){
-            Symbol param = new Symbol(parameters.IDENTIFIER(i).getText(), parameters.list_var(i).getText(), true);
+            Symbol param = new Symbol(parameters.IDENTIFIER(i).getText(), parameters.list_var(i).getText(), true, false);
             func.declare(param);
         }
 
@@ -96,9 +101,9 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
         String id = ctx.IDENTIFIER().getText();
         String constant = ctx.constant().getText();
 
-        Symbol symbol = scope_.lookup(id);
+        Symbol var = scope_.lookup(id);
 
-        if(symbol==null){
+        if(var==null){
             //TODO: throw error variable not found;
             try {
                 throw new VariableNotFoundException();
@@ -106,7 +111,109 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
                 e.printStackTrace();
             }
         }else{
-            symbol = constantAssignment(symbol, constant);
+            Symbol value = new Symbol("t", var.getDataType(),false, false );
+            value = constantAssignment(value, constant);
+            switch(ctx.op.getType()){
+                case NymtaxParser.ASSIGN:
+                    if(var.getDataType().equals(value.getDataType())) {
+                        var.setValue(
+                                value.getValue()
+                        );
+                    }else{
+                        //TODO ERROR
+                        System.out.println("ERROR: Datatype mismatch.");
+                    }
+                    break;
+                case NymtaxParser.ADD_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Integer a = (Integer) value.getValue();
+                        Integer b = (Integer) var.getValue();
+
+                        var.setValue(a+b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Float a = (Float) value.getValue();
+                        Float b = (Float) var.getValue();
+
+                        var.setValue(a+b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_STRNG) && var.getDataType().equals(Symbol.TYPE_STRNG) ){
+                        String a = (String) value.getValue();
+                        String b = (String) var.getValue();
+
+                        var.setValue(a+b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a+b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.SUB_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Integer a = (Integer) value.getValue();
+                        Integer b = (Integer) var.getValue();
+
+                        var.setValue(a-b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Float a = (Float) value.getValue();
+                        Float b = (Float) var.getValue();
+
+                        var.setValue(a-b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a-b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.MUL_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Integer a = (Integer) value.getValue();
+                        Integer b = (Integer) var.getValue();
+
+                        var.setValue(a*b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Float a = (Float) value.getValue();
+                        Float b = (Float) var.getValue();
+
+                        var.setValue(a*b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a*b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.DIV_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Integer a = (Integer) value.getValue();
+                        Integer b = (Integer) var.getValue();
+
+                        var.setValue(a/b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Float a = (Float) value.getValue();
+                        Float b = (Float) var.getValue();
+
+                        var.setValue(a/b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a/b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                default:
+                    System.out.println("ERROR: Unknown assignment operation");
+            }
+
+
         }
 
 
@@ -174,9 +281,9 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
         Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
         String id = ctx.IDENTIFIER().getText();
 
-        Symbol symbol = scope_.lookup(id);
+        Symbol var = scope_.lookup(id);
 
-        if(symbol==null){
+        if(var==null){
             //TODO: throw error variable not found;
             try {
                 throw new VariableNotFoundException();
@@ -185,47 +292,145 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
             }
         }else{
             Object expression = ExecutionManager.getInstance().visit(ctx.expression());
+            Symbol value = new Symbol("t", var.getDataType(),false, false );
+            value.setValue(expression);
+            switch(ctx.op.getType()){
+                case NymtaxParser.ASSIGN:
+                    if(var.getDataType().equals(value.getDataType())) {
+                        var.setValue(
+                                value.getValue()
+                        );
+                    }else{
+                        //TODO ERROR
+                        System.out.println("ERROR: Datatype mismatch.");
+                    }
+                    break;
+                case NymtaxParser.ADD_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
 
-            symbol = assignExpression(symbol, expression);
+                        var.setValue(a.intValue()+b.intValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.floatValue()+b.floatValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_STRNG) && var.getDataType().equals(Symbol.TYPE_STRNG) ){
+                        String a = (String) value.getValue();
+                        String b = (String) var.getValue();
+
+                        var.setValue(a+b);
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a+b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.SUB_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.intValue()-b.intValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.floatValue()-b.floatValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a-b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.MUL_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.intValue()*b.intValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.floatValue()*b.floatValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a*b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                case NymtaxParser.DIV_ASSIGN:
+                    if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.intValue()/b.intValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                        Number a = (Number) value.getValue();
+                        Number b = (Number) var.getValue();
+
+                        var.setValue(a.floatValue()/b.floatValue());
+                    }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                        Character a = (Character) value.getValue();
+                        Character b = (Character) var.getValue();
+
+                        var.setValue(a/b);
+                    }else {
+                        System.out.println("ERROR: Operation error");
+                    }
+                    break;
+                default:
+                    System.out.println("ERROR: Unknown assignment operation");
+            }
+
 
         }
 
         return true;
     }
 
-    public Symbol assignExpression(Symbol symbol, Object expressionReturn ){
+    public Object assignExpression(Symbol symbol, Object expressionReturn ){
 
         switch(symbol.getDataType()){
             case Symbol.TYPE_INT:
                 if(expressionReturn instanceof  Float){
                     Float ex = (Float) expressionReturn;
                     int a = ex.intValue();
-                    symbol.setValue(a);
+                    return a;
                 }else if (expressionReturn instanceof  Integer) {
-                    symbol.setValue(expressionReturn);
+                    return expressionReturn;
                 }else{
-                    symbol.setValue(0);
                     System.out.println("ERROR : datatype mismatch - Integer not found");
+                    return 0;
                 }
-                break;
             case Symbol.TYPE_FLO:
                 if(expressionReturn instanceof  Float){
-                    symbol.setValue(expressionReturn);
+                    return expressionReturn;
                 } else {
-                    symbol.setValue(0.0);
                     //TODO: error data type mismatch
                     System.out.println("ERROR : datatype mismatch - Float not found");
+                    return 0.0;
                 }
-                break;
             case Symbol.TYPE_CHR:
                 if(expressionReturn instanceof Character){
-                    symbol.setValue(expressionReturn);
+                    return expressionReturn;
                 }else{
                     //TODO: error data type mismatch
-                    symbol.setValue('0');
+
                     System.out.println("ERROR : datatype mismatch - Char not found");
+                    return '0';
                 }
-                break;
             case Symbol.TYPE_STRNG:
                 if(expressionReturn instanceof String){
                     symbol.setValue(expressionReturn);
@@ -237,31 +442,134 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
                 break;
             case Symbol.TYPE_BOOL:
                 if(expressionReturn instanceof Boolean){
-                    symbol.setValue(expressionReturn);
+                    return expressionReturn;
                 }else{
                     //TODO: error data type mismatch
-                    symbol.setValue(false);
                     System.out.println("ERROR : datatype mismatch - Boolean not found");
+                    return false;
                 }
-                break;
         }
-        return symbol;
+        return null;
     }
 
     @Override
     public Object visitVar_dec_expr(NymtaxParser.Var_dec_exprContext ctx) {
         Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
-        String dataType = ctx.list_var().getText();
+        String dataType = ctx.data_type().getText();
         String id = ctx.IDENTIFIER().getText();
         Symbol var;
-        var = new Symbol(id, dataType, false);
+        var = new Symbol(id, dataType, false, false);
 
         scope_.declare(var);
 
         Object expression = ExecutionManager.getInstance().visit(ctx.expression());
 
-        assignExpression(var, expression);
+        Symbol value = new Symbol("value", dataType, false, false);
+        value.setValue(assignExpression(var, expression));
+
+
+        switch(ctx.op.getType()){
+            case NymtaxParser.ASSIGN:
+                if(var.getDataType().equals(value.getDataType())) {
+                    var.setValue(
+                            value.getValue()
+                    );
+                }else{
+                    //TODO ERROR
+                    System.out.println("ERROR: Datatype mismatch.");
+                }
+                break;
+            case NymtaxParser.ADD_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_STRNG) && var.getDataType().equals(Symbol.TYPE_STRNG) ){
+                    String a = (String) value.getValue();
+                    String b = (String) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a+b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.SUB_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a-b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a-b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a-b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.MUL_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a*b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a*b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a*b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.DIV_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a/b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a/b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a/b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            default:
+                System.out.println("ERROR: Unknown assignment operation");
+        }
+
+        scope_.initialize(id, var.getValue());
 
         return true;
     }
@@ -270,30 +578,131 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
     public Object visitVar_dec_ident(NymtaxParser.Var_dec_identContext ctx) {
         Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
-        String dataType = ctx.list_var().getText();
+        String dataType = ctx.data_type().getText();
         String id = ctx.IDENTIFIER(0).getText();
         Symbol var;
-        var = new Symbol(id, dataType, false);
+
+
+        var = new Symbol(id, dataType, false, false);
 
         scope_.declare(var);
 
-        scope_.lookup(id);
+        Symbol value = scope_.lookup(id);
 
-        var.setValue(id);
+        switch(ctx.op.getType()){
+            case NymtaxParser.ASSIGN:
+                if(var.getDataType().equals(value.getDataType())) {
+                    var.setValue(
+                            value.getValue()
+                    );
+                }else{
+                    //TODO ERROR
+                    System.out.println("ERROR: Datatype mismatch.");
+                }
+                break;
+            case NymtaxParser.ADD_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_STRNG) && var.getDataType().equals(Symbol.TYPE_STRNG) ){
+                    String a = (String) value.getValue();
+                    String b = (String) var.getValue();
+
+                    var.setValue(a+b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a+b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.SUB_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a-b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a-b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a-b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.MUL_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a*b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a*b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a*b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            case NymtaxParser.DIV_ASSIGN:
+                if(value.getDataType().equals(Symbol.TYPE_INT) && var.getDataType().equals(Symbol.TYPE_INT) ){
+                    Integer a = (Integer) value.getValue();
+                    Integer b = (Integer) var.getValue();
+
+                    var.setValue(a/b);
+                }else if(value.getDataType().equals(Symbol.TYPE_FLO) && var.getDataType().equals(Symbol.TYPE_FLO) ){
+                    Float a = (Float) value.getValue();
+                    Float b = (Float) var.getValue();
+
+                    var.setValue(a/b);
+                }else if(value.getDataType().equals(Symbol.TYPE_CHR) && var.getDataType().equals(Symbol.TYPE_CHR) ){
+                    Character a = (Character) value.getValue();
+                    Character b = (Character) var.getValue();
+
+                    var.setValue(a/b);
+                }else {
+                    System.out.println("ERROR: Operation error");
+                }
+                break;
+            default:
+                System.out.println("ERROR: Unknown assignment operation");
+        }
 
         scope_.initialize(id, var.getValue());
 
         return true;
     }
 
+
     @Override
     public Object visitVar_dec_var(NymtaxParser.Var_dec_varContext ctx) {
         Function scope_ = ExecutionManager.getInstance().getCurrentFunc();
 
-        String dataType = ctx.list_var().getText();
+        String dataType = ctx.data_type().getText();
         String id = ctx.IDENTIFIER().getText();
         Symbol var;
-        var = new Symbol(id, dataType, false);
+        var = new Symbol(id, dataType, false, false);
 
         scope_.declare(var);
 
@@ -311,6 +720,58 @@ public class ScopeExpressionManager extends NymtaxBaseVisitor {
     @Override
     public Object visitVar_array_init(NymtaxParser.Var_array_initContext ctx) {
         //TODO: array initialization
-        return super.visitVar_array_init(ctx);
+        return visit(ctx.array_initialization());
+    }
+
+    @Override
+    public Object visitArray_initialization(NymtaxParser.Array_initializationContext ctx) {
+        String id = ctx.IDENTIFIER().getText();
+        Symbol symbol = new Symbol(id, ctx.data_type(0).getText(),false, true );
+        int i = Integer.parseInt(ctx.NUMBER().getText());
+        symbol.setArraySize(i);
+        ExecutionManager.getInstance().getCurrentFunc().declare(symbol);
+        return true;
+    }
+
+    @Override
+    public Object visitArray_assign(NymtaxParser.Array_assignContext ctx) {
+        String id = ctx.array_call().IDENTIFIER().getText();
+        int index = Integer.parseInt(ctx.array_call().NUMBER().getText());
+
+        Symbol symbol = ExecutionManager.getInstance().getCurrentFunc().lookup(id);
+        Object value;
+
+        if(symbol.isArray() && symbol.getArraySize() > index){
+            value = assignExpression(
+                    symbol,
+                    ExecutionManager.getInstance().visit(ctx.expression())
+            );
+            ArrayList a = (ArrayList) symbol.getValue();
+            a.set(index, value);
+        }
+
+
+        return super.visitArray_assign(ctx);
+    }
+
+    @Override
+    public Object visitVisit_array_call(NymtaxParser.Visit_array_callContext ctx) {
+        return visit(ctx.array_call());
+    }
+
+    @Override
+    public Object visitArray_call(NymtaxParser.Array_callContext ctx) {
+        Object value = null;
+
+        String id = ctx.IDENTIFIER().getText();
+        int i = Integer.parseInt(ctx.NUMBER().getText());
+
+        Symbol symbol = ExecutionManager.getInstance().getCurrentFunc().lookup(id);
+
+        if(symbol.isArray() && symbol.getArraySize() > i){
+            value = ((ArrayList)symbol.getValue()).get(i);
+        }
+
+        return value;
     }
 }

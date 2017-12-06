@@ -189,6 +189,36 @@ public class DetectionNymtaxWalker implements NymtaxListener{
     }
 
     @Override
+    public void enterArray_call(Array_callContext ctx) {
+
+    }
+
+    @Override
+    public void exitArray_call(Array_callContext ctx) {
+
+    }
+
+    @Override
+    public void enterArray_length(Array_lengthContext ctx) {
+
+    }
+
+    @Override
+    public void exitArray_length(Array_lengthContext ctx) {
+
+    }
+
+    @Override
+    public void enterArray_assign(Array_assignContext ctx) {
+
+    }
+
+    @Override
+    public void exitArray_assign(Array_assignContext ctx) {
+
+    }
+
+    @Override
 	public void enterList_statement(List_statementContext ctx) {
 		// TODO Auto-generated method stub
 		if(output == 0)
@@ -219,6 +249,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
     @Override
     public void exitStatement_assign(NymtaxParser.Statement_assignContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_arrAssign(Statement_arrAssignContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_arrAssign(Statement_arrAssignContext ctx) {
 
     }
 
@@ -309,6 +349,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
     @Override
     public void exitStatement_read(NymtaxParser.Statement_readContext ctx) {
+
+    }
+
+    @Override
+    public void enterStatement_getArrLen(Statement_getArrLenContext ctx) {
+
+    }
+
+    @Override
+    public void exitStatement_getArrLen(Statement_getArrLenContext ctx) {
 
     }
 
@@ -433,19 +483,45 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
     }
 
-	@Override
-	public void enterString_expression(String_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] String expression found: "+ ctx.getText());
-	}
+    @Override
+    public void enterVisit_array_call(Visit_array_callContext ctx) {
 
-	@Override
-	public void exitString_expression(String_expressionContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Last of string expressions.");
-	}
+    }
+
+    @Override
+    public void exitVisit_array_call(Visit_array_callContext ctx) {
+
+    }
+
+    @Override
+    public void enterString_add(String_addContext ctx) {
+
+    }
+
+    @Override
+    public void exitString_add(String_addContext ctx) {
+
+    }
+
+    @Override
+    public void enterString_var(String_varContext ctx) {
+
+    }
+
+    @Override
+    public void exitString_var(String_varContext ctx) {
+
+    }
+
+    @Override
+    public void enterString_const(String_constContext ctx) {
+
+    }
+
+    @Override
+    public void exitString_const(String_constContext ctx) {
+
+    }
 
     @Override
     public void enterNumerical_val(NymtaxParser.Numerical_valContext ctx) {
@@ -488,6 +564,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
     }
 
     @Override
+    public void enterNumerical_array(Numerical_arrayContext ctx) {
+
+    }
+
+    @Override
+    public void exitNumerical_array(Numerical_arrayContext ctx) {
+
+    }
+
+    @Override
     public void enterNumerical_negparen(NymtaxParser.Numerical_negparenContext ctx) {
 
     }
@@ -508,6 +594,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
     }
 
     @Override
+    public void enterBoolean_call(Boolean_callContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_call(Boolean_callContext ctx) {
+
+    }
+
+    @Override
     public void enterBoolean_log(NymtaxParser.Boolean_logContext ctx) {
 
     }
@@ -524,6 +620,16 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 
     @Override
     public void exitBoolean_or(NymtaxParser.Boolean_orContext ctx) {
+
+    }
+
+    @Override
+    public void enterBoolean_array(Boolean_arrayContext ctx) {
+
+    }
+
+    @Override
+    public void exitBoolean_array(Boolean_arrayContext ctx) {
 
     }
 
@@ -690,33 +796,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] END OF READ STATEMENTS.");
 	}
 
-	@Override
-	public void enterInput_data_type(Input_data_typeContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Input data type statement found: " +ctx.getText());
-	}
-
-	@Override
-	public void exitInput_data_type(Input_data_typeContext ctx) {
-		// TODO Auto-generated method stub
-	//	if(output == 0);
-	//		logger.info("[INFO] ");
-	}
-
-	@Override
-	public void enterInput_IDENTIFIER(Input_IDENTIFIERContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Input identifier statement found: " +ctx.getText());
-	}
-
-	@Override
-	public void exitInput_IDENTIFIER(Input_IDENTIFIERContext ctx) {
-		// TODO Auto-generated method stub
-	//	if(output == 0)
-	//		logger.info("[INFO] ");
-	}
 
     @Override
     public void enterConditional_if(NymtaxParser.Conditional_ifContext ctx) {
@@ -739,12 +818,72 @@ public class DetectionNymtaxWalker implements NymtaxListener{
     }
 
     @Override
-    public void enterConditional_ifelseif(NymtaxParser.Conditional_ifelseifContext ctx) {
+    public void enterOtherwise_when(Otherwise_whenContext ctx) {
 
     }
 
     @Override
-    public void exitConditional_ifelseif(NymtaxParser.Conditional_ifelseifContext ctx) {
+    public void exitOtherwise_when(Otherwise_whenContext ctx) {
+
+    }
+
+    @Override
+    public void enterOtherwise_when_mult(Otherwise_when_multContext ctx) {
+
+    }
+
+    @Override
+    public void exitOtherwise_when_mult(Otherwise_when_multContext ctx) {
+
+    }
+
+    @Override
+    public void enterOtherwise(OtherwiseContext ctx) {
+
+    }
+
+    @Override
+    public void exitOtherwise(OtherwiseContext ctx) {
+
+    }
+
+    @Override
+    public void enterConditional_switch_expr(Conditional_switch_exprContext ctx) {
+
+    }
+
+    @Override
+    public void exitConditional_switch_expr(Conditional_switch_exprContext ctx) {
+
+    }
+
+    @Override
+    public void enterConditional_switch_variable(Conditional_switch_variableContext ctx) {
+
+    }
+
+    @Override
+    public void exitConditional_switch_variable(Conditional_switch_variableContext ctx) {
+
+    }
+
+    @Override
+    public void enterList_event(List_eventContext ctx) {
+
+    }
+
+    @Override
+    public void exitList_event(List_eventContext ctx) {
+
+    }
+
+    @Override
+    public void enterBase_statement(Base_statementContext ctx) {
+
+    }
+
+    @Override
+    public void exitBase_statement(Base_statementContext ctx) {
 
     }
 
@@ -755,43 +894,6 @@ public class DetectionNymtaxWalker implements NymtaxListener{
 			logger.info("[INFO] Entering OTHERWISE-WHEN statement.");
 		}
 	}
-
-	@Override
-	public void exitOtherwise_when_statement(Otherwise_when_statementContext ctx) {
-		// TODO Auto-generated method stub
-		if(output == 0)
-			logger.info("[INFO] Exiting OTHERWISE-WHEN statement.");
-	}
-
-    @Override
-    public void enterConditional_switch(NymtaxParser.Conditional_switchContext ctx) {
-
-    }
-
-    @Override
-    public void exitConditional_switch(NymtaxParser.Conditional_switchContext ctx) {
-
-    }
-
-    @Override
-    public void enterConditional_switche(NymtaxParser.Conditional_switcheContext ctx) {
-
-    }
-
-    @Override
-    public void exitConditional_switche(NymtaxParser.Conditional_switcheContext ctx) {
-
-    }
-
-    @Override
-    public void enterCondtional_base(NymtaxParser.Condtional_baseContext ctx) {
-
-    }
-
-    @Override
-    public void exitCondtional_base(NymtaxParser.Condtional_baseContext ctx) {
-
-    }
 
     @Override
     public void enterLoop_for(NymtaxParser.Loop_forContext ctx) {

@@ -19,7 +19,6 @@ public class NymtaxWalker extends NymtaxBaseListener {
     private Function currentFunc;
 
     public NymtaxWalker(){
-        mainFunction = new Function("RUN MAIN", null, null, null);
         globalFunctions = new HashMap<String, Function>();
         currentFunc = mainFunction;
     }
@@ -71,7 +70,7 @@ public class NymtaxWalker extends NymtaxBaseListener {
             //TODO: ERROR variable already exists exception
 
         }else{int type = 0;
-            NymtaxParser.Data_typeContext dtCtx = ctx.list_var().data_type();
+            NymtaxParser.Data_typeContext dtCtx = ctx.data_type();
 //            String INT = dtCtx.INT().getText();
 //            String FLO = dtCtx.FLO().getText();
 //            String CHR = dtCtx.CHR().getText();
@@ -87,7 +86,7 @@ public class NymtaxWalker extends NymtaxBaseListener {
 //                type = NymtaxParser.STRNG;
 //            }
 
-            Symbol newSymbol = new Symbol(varName, dtCtx.getText(), true);
+            Symbol newSymbol = new Symbol(varName, dtCtx.getText(), true, false);
             currentFunc.declare(newSymbol);
             if(ctx.constant() != null){
                 currentFunc.initialize(newSymbol.getIdentifier(), ctx.constant().getText());
@@ -167,8 +166,5 @@ public class NymtaxWalker extends NymtaxBaseListener {
 //
 //    }
 
-    @Override public void enterOtherwise_when_statement(NymtaxParser.Otherwise_when_statementContext ctx) { }
-
-    @Override public void exitOtherwise_when_statement(NymtaxParser.Otherwise_when_statementContext ctx) { }
 
 }

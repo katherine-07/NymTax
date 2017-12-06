@@ -7,6 +7,8 @@ import compiler.exceptions.VariableNotFoundException;
 import compiler.objects.Scope;
 import compiler.objects.Symbol;
 
+import java.util.ArrayList;
+
 public class BooleanExpression extends NymtaxBaseVisitor {
 
 
@@ -55,9 +57,12 @@ public class BooleanExpression extends NymtaxBaseVisitor {
     @Override
     public Boolean visitBoolean_numerical(NymtaxParser.Boolean_numericalContext ctx) {
 
-        //numerical expression.solve (left) + .solve(right)
-        Float left = (Float) visit(ctx.numerical_expression(0));
-        Float right = (Float) visit(ctx.numerical_expression(1));
+        NumericalExpression numericalExpression = new NumericalExpression();
+
+        //numerical expression.solve (left) + .solve(right))
+
+        Number left = (Number) numericalExpression.visit(ctx.numerical_expression(0));
+        Number right = (Number) numericalExpression.visit(ctx.numerical_expression(1));
 
         switch(ctx.op.getType()){
             case NymtaxParser.EQUAL:
@@ -67,16 +72,16 @@ public class BooleanExpression extends NymtaxBaseVisitor {
                 return left != right;
 
             case NymtaxParser.GT:
-                return left > right;
+                return left.floatValue() > right.floatValue();
 
             case NymtaxParser.LT:
-                return left < right;
+                return left.floatValue() < right.floatValue();
 
             case NymtaxParser.GE:
-                return left >= right;
+                return left.floatValue() >= right.floatValue();
 
             case NymtaxParser.LE:
-                return left <= right;
+                return left.floatValue() <= right.floatValue();
 
             default:
                 return null;
@@ -87,8 +92,8 @@ public class BooleanExpression extends NymtaxBaseVisitor {
     public Boolean visitBoolean_string(NymtaxParser.Boolean_stringContext ctx) {
 
         //string expression.solve (left) + .solve(right)
-        String left = (String) visit(ctx.string_expression(0));
-        String right = (String) visit(ctx.string_expression(1));
+        String left = (String) ExecutionManager.getInstance().visit(ctx.string_expression(0));
+        String right = (String)  ExecutionManager.getInstance().visit(ctx.string_expression(1));
 
         boolean isEqual = left.equals(right);
 
@@ -152,6 +157,29 @@ public class BooleanExpression extends NymtaxBaseVisitor {
             }
         }
 
+    }
+
+    @Override
+    public Object visitBoolean_array(NymtaxParser.Boolean_arrayContext ctx) {
+        String id = ctx.array_call().IDENTIFIER().getText();
+        Integer index = Integer.parseInt(
+                ctx.array_call().NUMBER().getText()
+        );
+        ExecutionManager m =ExecutionManager.getInstance();
+
+        Symbol arr = m.getCurrentFunc().lookup(id);
+
+        if(id != null && arr.isArray()){
+            return ((ArrayList)arr.getValue()).get(index);
+        }else{
+            System.out.println("ERROR: bolean array not found");
+            return null;
+        }
+    }
+
+    @Override
+    public Object visitBoolean_call(NymtaxParser.Boolean_callContext ctx) {
+        return ExecutionManager.getInstance().visit(ctx.function_call_stat());
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Scanner;
 
 public class ExecutionManager extends NymtaxBaseVisitor{
 
@@ -24,20 +25,26 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     private ScopeExpressionManager scopeExpressionManager;
     private BooleanExpression booleanExpression;
     private NumericalExpression numericalExpression;
+    private StringExpression stringExpression;
+    private ConditionalExpression conditionalExpression;
+    Scanner s = new Scanner(System.in);
 
     private ExecutionManager(){
         scopeExpressionManager = new ScopeExpressionManager();
         booleanExpression = new BooleanExpression();
         numericalExpression = new NumericalExpression();
+        conditionalExpression = new ConditionalExpression();
+        stringExpression = new StringExpression();
         newProgram();
     }
 
     public void newProgram(){
-        mainFunction = new Function("ROOT", null, null, "VOID");
+        mainFunction = new Function("ROOT", null, null, "VOID", false);
         globalFunctions = new HashMap<String, Function>();
         currentFunc = mainFunction;
     }
     public static ExecutionManager getInstance() {
+
         if(instance==null){
             instance = new ExecutionManager();
         }
@@ -68,7 +75,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
         }
 
 
-        currentFunc = new Function("RUN MAIN", mainFunction, ctx.func_main().func_body(), "VOID");
+        currentFunc = new Function("RUN MAIN", mainFunction, ctx.func_main().func_body(), "VOID", false);
         visit(ctx.func_main().func_body());
 
         //TODO
@@ -120,6 +127,11 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     }
 
     @Override
+    public Object visitVisit_stringexpr(NymtaxParser.Visit_stringexprContext ctx) {
+        return stringExpression.visit(ctx.string_expression());
+    }
+
+    @Override
     public Object visitSend_variable(NymtaxParser.Send_variableContext ctx) {
         Symbol symbol = currentFunc.getSendSymbol();
         String id = ctx.IDENTIFIER().getText();
@@ -144,7 +156,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
         Symbol symbol = currentFunc.getSendSymbol();
 
-        symbol = scopeExpressionManager.assignExpression(symbol, expression);
+        symbol.setValue(scopeExpressionManager.assignExpression(symbol, expression));
         currentFunc.setSendSymbol(symbol);
         return symbol.getValue();
     }
@@ -175,7 +187,7 @@ public class ExecutionManager extends NymtaxBaseVisitor{
             paramValues.add(val);
         }
 
-        currentFunc = new Function(func.getIdentifier(), currentFunc, func.getContex(), func.getSendType());
+        currentFunc = new Function(func.getIdentifier(), currentFunc, func.getContex(), func.getSendType(), func.getSendSymbol().isArray());
 
         if(ctx.list_parameter() != null) {
             currentFunc.initializeParameter(paramValues);
@@ -187,8 +199,27 @@ public class ExecutionManager extends NymtaxBaseVisitor{
     }
 
     @Override
+    public Object visitStatement_getArrLen(NymtaxParser.Statement_getArrLenContext ctx) {
+        return visit(ctx.array_length());
+    }
+
+    @Override
+    public Integer visitArray_length(NymtaxParser.Array_lengthContext ctx) {
+        Integer length = 0;
+
+        String id = ctx.IDENTIFIER().getText();
+
+        Symbol a = currentFunc.lookup(id);
+        if(a.isArray()){
+            length = a.getArraySize();
+        }
+
+        return length;
+    }
+
+    @Override
     public Object visitStatement_when(NymtaxParser.Statement_whenContext ctx) {
-        return super.visitStatement_when(ctx);
+        return conditionalExpression.visit(ctx.when_statement());
     }
 
     @Override
@@ -202,31 +233,94 @@ public class ExecutionManager extends NymtaxBaseVisitor{
 
         List<ParseTree> tree = ctx.write_list().children;
         System.out.print("CONSOLE: ");
+        int j = 0;
         for (ParseTree t: tree
                 ) {
             char[] a = t.getText().toCharArray();
+
             if(a.length>0 && a[0]=='\"' && a[a.length-1]=='\"'){
                 if(a.length>2){
                     for(int i=1; i<a.length-1; i++){
                         System.out.print(a[i]);
                     }
                 }
+
+            // Array
+            }else if(a.length >= 4 && a[1] == '['){
+
+                System.out.print(visit(ctx.write_list().expression(j)));
+                j++ ;
             }else if(currentFunc.isDeclared(t.getText())){
                 Symbol s = currentFunc.lookup(t.getText());
                 System.out.print(s.getValue());
             }else{
-                //TODO: Error - variable not found exception
-                try {
-                    throw new VariableNotFoundException();
-                } catch (VariableNotFoundException e) {
-                    e.printStackTrace();
-                    System.out.println("Variable cannot be found.");
-                }
+
+                System.out.print(visit(ctx.write_list().expression(j)));
+                j++ ;
             }
         }
 
         System.out.println();
         return true;
+    }
+
+    @Override
+    public Object visitStatement_read(NymtaxParser.Statement_readContext ctx) {
+        return visit(ctx.read_statement());
+    }
+
+    @Override
+    public Object visitStatement_loop_throughout(NymtaxParser.Statement_loop_throughoutContext ctx) {
+        return conditionalExpression.visit(ctx);
+    }
+
+    @Override
+    public Object visitStatement_loop_doThroughout(NymtaxParser.Statement_loop_doThroughoutContext ctx) {
+        return conditionalExpression.visit(ctx);
+    }
+
+    @Override
+    public Object visitStatement_loop_every(NymtaxParser.Statement_loop_everyContext ctx) {
+        return conditionalExpression.visit(ctx);
+    }
+
+    @Override
+    public Object visitRead_statement(NymtaxParser.Read_statementContext ctx) {
+        int type = ctx.input.getType();
+        String id = ctx.IDENTIFIER().getText();
+        Symbol symbol = currentFunc.lookup(id);
+        System.out.print("CONSOLE: ");
+        if(symbol!=null) {
+            switch (type) {
+                case NymtaxParser.INT:
+                    symbol.setValue(s.nextInt());
+                    s.nextLine();
+                    break;
+                case NymtaxParser.FLO:
+                    symbol.setValue(s.nextFloat());
+                    s.nextLine();
+                    break;
+                case NymtaxParser.STRNG:
+                    symbol.setValue(s.next());
+                    s.nextLine();
+                    break;
+
+            }
+        }else{
+            System.out.println("ERROR: Variable not found in read statement");
+        }
+
+        return symbol.getValue();
+    }
+
+    @Override
+    public Object visitVisit_array_call(NymtaxParser.Visit_array_callContext ctx) {
+        return scopeExpressionManager.visit(ctx);
+    }
+
+    @Override
+    public Object visitStatement_arrAssign(NymtaxParser.Statement_arrAssignContext ctx) {
+        return scopeExpressionManager.visit(ctx.array_assign());
     }
 
     @Override

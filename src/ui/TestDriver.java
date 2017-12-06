@@ -15,7 +15,7 @@ public class TestDriver {
 
     public static void main(String args[]){
         Scanner s = new Scanner(System.in);
-        Function scope = new Function("main", null,null, null);
+        Function scope = new Function("main", null,null, null, false);
         ExecutionManager a = ExecutionManager.getInstance();
 
         while(true){

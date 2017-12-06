@@ -81,7 +81,6 @@ QUOTE           : '"';
 
 // §3.12 Operators
 
-ASSIGN          : '=';
 GT              : '>';
 LT              : '<';
 NOT             : '!';
@@ -123,6 +122,7 @@ RSHIFT          : '>>';
 RSHIFT_ASSIGN   : '>>=';
 URSHIFT_ASSIGN  : '>>>=';
 
+ASSIGN          : '=';
 NEW       : 'NEW';
 
 data_type : INT | FLO | CHR | STRNG | BOOL;
@@ -153,11 +153,13 @@ ASCII			: LETTER_NUMBER |
  				 '\u007b'..'\u007f' ;
 ASCII_CHARS		: ASCII+ ;
 WS  :  [ \t\r\n\u000C]+ -> skip ;
+
+
 // VARIABLE DECLARATION //
 
-var_declaration	: list_var  IDENTIFIER ASSIGN IDENTIFIER              #var_dec_ident
-                    | list_var IDENTIFIER ASSIGN expression           #var_dec_expr
-                    | list_var IDENTIFIER                           #var_dec_var
+var_declaration	: data_type  IDENTIFIER op=(ASSIGN|ADD_ASSIGN|SUB_ASSIGN|MUL_ASSIGN|DIV_ASSIGN) IDENTIFIER              #var_dec_ident
+                    | data_type IDENTIFIER op=(ASSIGN|ADD_ASSIGN|SUB_ASSIGN|MUL_ASSIGN|DIV_ASSIGN) expression           #var_dec_expr
+                    | data_type IDENTIFIER                           #var_dec_var
                     | const_declaration                             #var_dec_const
                     | array_initialization                          #var_array_init;
 
@@ -167,7 +169,7 @@ list_var		: data_type LBRACK RBRACK
 
 // CONSTANT DECLARATION //
 list_constants      : (const_declaration SEMI )+;
-const_declaration 	: list_var IDENTIFIER ASSIGN constant;
+const_declaration 	: data_type IDENTIFIER ASSIGN constant;
 constant			: op=(ADD|SUB) NUMBER
                         | FLOAT
                         | CHAR
@@ -177,12 +179,15 @@ constant			: op=(ADD|SUB) NUMBER
 // ARRAY INITIALIZARION //
 array_initialization    :   data_type IDENTIFIER LBRACK RBRACK ASSIGN NEW data_type LBRACK NUMBER RBRACK ;
 array_call              :   IDENTIFIER LBRACK NUMBER RBRACK ;
+array_length            :   IDENTIFIER DOT 'length' ;
+array_assign            :   array_call ASSIGN expression ;
 
 // STATEMENT //
 list_statement	: LBRACE list_statement RBRACE
                     | ( statement SEMI )+;
 statement		: var_declaration                       #statement_var_dec
                     | assign                            #statement_assign
+                    | array_assign                      #statement_arrAssign
                     | function_call_stat                #statement_func_call
                     | when_statement                    #statement_when
                     | condition_statement               #statement_condition
@@ -192,6 +197,7 @@ statement		: var_declaration                       #statement_var_dec
 				    | send_statement                    #statement_send
 				    | write_statement                   #statement_write
 				    | read_statement                    #statement_read
+				    | array_length                      #statement_getArrLen
 				    | STOP                              #statement_stop
 				    | PROCEED                           #statement_proceed;
 
@@ -206,26 +212,26 @@ send_statement		: SEND constant                 #send_const
 expression			: string_expression                             #visit_stringexpr
                     | numerical_expression                          #visit_numexpr
                     | boolean_expression                            #visit_boolexpr
-                    | function_call_stat                            #visit_func_call;
+                    | function_call_stat                            #visit_func_call
+                    | array_call                                    #visit_array_call;
 
-string_expression	: ADD string_expression
-                    | NOT string_expression
-                    | SUB string_expression
-                    | IDENTIFIER
-                    | STRING;
+string_expression	: string_expression ADD string_expression   #string_add
+                    | IDENTIFIER                                #string_var
+                    | STRING                                    #string_const;
 
 numerical_expression: numerical_expression op=(MUL|DIV|MOD) numerical_expression # numerical_MDM
                     | numerical_expression op=(ADD|SUB) numerical_expression     # numerical_AS
-                    | value=(INTEGER|FLOAT)                                      # numerical_val
-                    | IDENTIFIER                                                 # numerical_var
-                    | array_call                                                 # numerical_arr
+                    | value=(INTEGER|FLOAT|IDENTIFIER)                           # numerical_val
                     | '('numerical_expression')'                                 # numerical_paren
-                    | SUB '('numerical_expression')'                             # numerical_negparen;
+                    | SUB '('numerical_expression')'                             # numerical_negparen
+                    | array_call                                                 # numerical_array;
 
 
 boolean_expression		: boolean_expression OR boolean_expression      #boolean_or
-                    | boolean_expression AND boolean_expression         #boolean_and
-                    | boolean_logic                                     #boolean_log;
+                        | boolean_expression AND boolean_expression         #boolean_and
+                        | boolean_logic                                     #boolean_log
+                        | array_call                                        #boolean_array
+                        | function_call_stat                                #boolean_call;
 
 boolean_logic 	: LPAREN boolean_expression RPAREN      #boolean_paren
                     | NOT boolean_expression            #boolean_not
@@ -239,20 +245,20 @@ bool_term			: numerical_expression op=( EQUAL | NOTEQUAL | LE | GE | GT | LT ) n
                     | TRUE                                                                      #boolean_true
                     | FALSE                                                                     #boolean_false;
 // ASSIGNMENT STATEMENTS //
-assign			: IDENTIFIER ASSIGN IDENTIFIER              #assign_variable
-                | IDENTIFIER ASSIGN expression              #assign_expression
-                | IDENTIFIER ASSIGN constant                #assign_constant;
+assign			: IDENTIFIER  op=(ASSIGN|ADD_ASSIGN|SUB_ASSIGN|MUL_ASSIGN|DIV_ASSIGN) IDENTIFIER              #assign_variable
+                | IDENTIFIER  op=(ASSIGN|ADD_ASSIGN|SUB_ASSIGN|MUL_ASSIGN|DIV_ASSIGN) expression              #assign_expression
+                | IDENTIFIER  op=(ASSIGN|ADD_ASSIGN|SUB_ASSIGN|MUL_ASSIGN|DIV_ASSIGN) constant                #assign_constant;
 
 // INPUT OUTPUT //
 write_statement	: WRITE LPAREN write_list RPAREN ;
 write_list		: IDENTIFIER + write_list
                 | STRING + write_list
                 | STRING
-                | IDENTIFIER;
+                | IDENTIFIER
+                | expression + write_list
+                | expression;
 
-read_statement	: READ LPAREN input_data_type COMMA input_IDENTIFIER RPAREN;
-input_data_type : MOD data_type;
-input_IDENTIFIER	: AT_SIGN IDENTIFIER;
+read_statement	: READ LPAREN input=(INT|FLO|STRNG) AT_SIGN IDENTIFIER RPAREN;
 
 // CONDITIONAL STATEMENTS //
 when_statement	: WHEN LPAREN boolean_expression RPAREN LBRACE list_statement? RBRACE                                           #conditional_if

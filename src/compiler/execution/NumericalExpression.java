@@ -2,6 +2,7 @@ package compiler.execution;
 
 import antlr4.custom.ThrowingErrorListener;
 import compiler.objects.Function;
+import compiler.objects.Symbol;
 import org.antlr.v4.gui.TreeViewer;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -15,7 +16,7 @@ import antlr4.generate.NymtaxBaseVisitor;
 import antlr4.generate.NymtaxLexer;
 
 
-
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class NumericalExpression extends NymtaxBaseVisitor{
@@ -67,17 +68,17 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Float visitNumerical_AS(NymtaxParser.Numerical_ASContext ctx) {
-        Float leftNum = (Float) visit(ctx.numerical_expression(0));
-        Float rightNum = (Float) visit(ctx.numerical_expression(1));
+        Number leftNum = (Number) visit(ctx.numerical_expression(0));
+        Number rightNum = (Number) visit(ctx.numerical_expression(1));
 
         if(leftNum == null || rightNum == null){
             return null;
         } else {
             switch (ctx.op.getType()) {
                 case NymtaxParser.ADD:
-                    return leftNum + rightNum;
+                    return leftNum.floatValue() + rightNum.floatValue();
                 case NymtaxParser.SUB:
-                    return leftNum - rightNum;
+                    return leftNum.floatValue() - rightNum.floatValue();
             }
             return null;
         }
@@ -85,8 +86,8 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Float visitNumerical_MDM(NymtaxParser.Numerical_MDMContext ctx) {
-        Float leftNum = (Float) visit(ctx.numerical_expression(0));
-        Float rightNum = (Float) visit(ctx.numerical_expression(1));
+        Number leftNum = (Number) visit(ctx.numerical_expression(0));
+        Number rightNum = (Number) visit(ctx.numerical_expression(1));
 
         if(leftNum == null || rightNum == null){
             return null;
@@ -94,11 +95,11 @@ public class NumericalExpression extends NymtaxBaseVisitor{
         else {
             switch (ctx.op.getType()) {
                 case NymtaxParser.DIV:
-                    return leftNum / rightNum;
+                    return leftNum.floatValue() / rightNum.floatValue();
                 case NymtaxParser.MOD:
-                    return leftNum % rightNum;
+                    return leftNum.floatValue() % rightNum.floatValue();
                 case NymtaxParser.MUL:
-                    return leftNum * rightNum;
+                    return leftNum.floatValue() * rightNum.floatValue();
             }
 
             return null;
@@ -112,7 +113,38 @@ public class NumericalExpression extends NymtaxBaseVisitor{
 
     @Override
     public Object visitNumerical_val(NymtaxParser.Numerical_valContext ctx) {
-        return Float.valueOf(ctx.value.getText());
+        switch (ctx.value.getType()){
+            case NymtaxParser.IDENTIFIER:
+                String id = ctx.value.getText();
+                Symbol value = ExecutionManager.getInstance().getCurrentFunc().lookup(id);
+                if(value.getDataType().equals(Symbol.TYPE_FLO) || value.getDataType().equals(Symbol.TYPE_INT)){
+                    return value.getValue();
+                }
+                break;
+            case NymtaxParser.INTEGER:
+                //Fallthrough
+            case NymtaxParser.FLOAT:
+                return Float.valueOf(ctx.value.getText());
+        }
+        return null;
+    }
+
+    @Override
+    public Object visitNumerical_array(NymtaxParser.Numerical_arrayContext ctx) {
+        String id = ctx.array_call().IDENTIFIER().getText();
+        Integer index = Integer.parseInt(
+                ctx.array_call().NUMBER().getText()
+        );
+        ExecutionManager m =ExecutionManager.getInstance();
+
+        Symbol arr = m.getCurrentFunc().lookup(id);
+
+        if(id != null && arr.isArray()){
+            return ((ArrayList)arr.getValue()).get(index);
+        }else{
+            System.out.println("ERROR: numerical array not found");
+            return null;
+        }
     }
 
     @Override
